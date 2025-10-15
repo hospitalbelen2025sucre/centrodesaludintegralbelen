@@ -213,7 +213,7 @@
             font-size: 2.25rem;
             font-weight: 800;
             letter-spacing: -0.025em;
-            color: white;
+            color: rgb(243, 3, 3);
         }
 
         @media (min-width: 640px) {
@@ -234,7 +234,7 @@
             max-width: 32rem;
             text-align: center;
             font-size: 1.125rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(8, 8, 8, 0.9);
         }
 
         @media (min-width: 640px) {
@@ -302,6 +302,20 @@
 
         .form-group input:focus,
         .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--color-gray-200);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
             outline: none;
             border-color: var(--color-primary);
         }
@@ -1052,44 +1066,32 @@
     </header>
 
     <!-- User Info Display -->
-    
+    <div id="userInfo" class="logged-user-info" style="display: none;">
+        <span id="loggedUser"></span>
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+    </div>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 400px; margin: 15% auto;">
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">🔐 Acceso para Personal Médico</h3>
+                <h3 class="modal-title">🔐 Acceso Personal Médico</h3>
                 <span class="close" onclick="closeLoginModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="login-form">
-                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
-                        <strong>⚠️ Acceso Restringido</strong><br>
-                        Solo personal autorizado puede registrar pacientes
-                    </div>
-                    <div class="form-group">
-                        <label for="username">👤 Usuario:</label>
-                        <input type="text" id="username" placeholder="Ingrese su usuario" autocomplete="username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">🔑 Contraseña:</label>
-                        <input type="password" id="password" placeholder="Ingrese su contraseña" autocomplete="current-password">
-                    </div>
-                    <div class="login-error" id="loginError" style="display: none;"></div>
-                    <div class="form-actions">
-                        <button class="btn btn-secondary" onclick="closeLoginModal()" style="width: 48%;">
-                            ❌ Cancelar
-                        </button>
-                        <button class="btn btn-primary" onclick="authenticate()" style="width: 48%;">
-                            🚀 Acceder
-                        </button>
-                    </div>
-                    <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 8px; font-size: 0.9rem;">
-                        <strong>💡 Credenciales de Personal:</strong><br>
-                        <strong>Usuario:</strong> admin | <strong>Pass:</strong> medico2024<br>
-                        <strong>Usuario:</strong> doctor | <strong>Pass:</strong> salud123<br>
-                        <strong>Usuario:</strong> enfermera | <strong>Pass:</strong> cuidados2024
-                    </div>
+                <p style="margin-bottom: 15px; color: #666;">Ingrese sus credenciales para registrar pacientes</p>
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" class="form-control" placeholder="Ingrese su usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" class="form-control" placeholder="Ingrese su contraseña">
+                </div>
+                <div id="loginError" class="login-error" style="display: none;"></div>
+                <div class="form-actions" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="closeLoginModal()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="authenticate()">Iniciar Sesión</button>
                 </div>
             </div>
         </div>
@@ -1158,6 +1160,14 @@
                                 <option value="SUS">SUS</option>
                                 <option value="Caja Privada">Caja Privada</option>
                                 <option value="Ninguno">Ninguno</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="turno">Turno *</label>
+                            <select id="turno" name="turno" required>
+                                <option value="">Seleccionar Turno</option>
+                                <option value="morning">Mañana</option>
+                                <option value="afternoon">Tarde</option>
                             </select>
                         </div>
                         <button type="submit" class="form-submit">Registrar Paciente</button>
@@ -1277,7 +1287,7 @@
                     <!-- Ginecología -->
                     <div class="service-card" onclick="openAppointmentModal('GINECOLOGIA')">
                         <div class="service-icon-container">
-                            <div class="service-icon">🤱</div>
+                            <div class="service-icon"> busty</div>
                         </div>
                         <div class="service-info">
                             <div class="service-name">GINECOLOGIA</div>
@@ -1439,10 +1449,10 @@
         let pendingSlot = null;
 
         const validCredentials = {
-            'admin': 'medico2024',
-            'doctor': 'salud123',
-            'enfermera': 'cuidados2024'
-        };
+    'admin': 'medico2024',
+    'doctor': 'salud123',
+    'enfermera': 'cuidados2024'
+};
 
         function authenticate() {
             const username = document.getElementById('username').value.trim();
@@ -1464,6 +1474,12 @@
                 if (pendingSlot) {
                     showPatientFormAfterAuth(pendingSlot);
                     pendingSlot = null;
+                }
+                
+                // If we're authenticating from the registration form, submit it
+                if (document.getElementById('registrationForm').querySelector('button[type="submit"]').disabled) {
+                    document.getElementById('registrationForm').querySelector('button[type="submit"]').disabled = false;
+                    document.getElementById('registrationForm').querySelector('button[type="submit"]').click();
                 }
                 
                 alert(`✅ Acceso concedido, ${username}!\n🏥 Ahora puede registrar nuevos pacientes.`);
@@ -1507,38 +1523,270 @@
         let currentService = '';
         let currentShift = 'morning';
         let currentSlot = null;
-        const appointmentsData = {};
+        let appointmentsData = {};
 
-        const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
-        
-        services.forEach(service => {
-            appointmentsData[service] = {
-                morning: Array.from({length: 20}, (_, i) => ({
-                    slotNumber: i + 1,
-                    patient: null
-                })),
-                afternoon: Array.from({length: 20}, (_, i) => ({
-                    slotNumber: i + 1,
-                    patient: null
-                }))
+        // Load data from localStorage or initialize with default data
+        function loadAppointmentsData() {
+            try {
+                const savedData = localStorage.getItem('appointmentsData');
+                if (savedData) {
+                    appointmentsData = JSON.parse(savedData);
+                    // Ensure all services exist in the data
+                    const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
+                    services.forEach(service => {
+                        if (!appointmentsData[service]) {
+                            appointmentsData[service] = {
+                                morning: Array.from({length: 20}, (_, i) => ({
+                                    slotNumber: i + 1,
+                                    patient: null
+                                })),
+                                afternoon: Array.from({length: 20}, (_, i) => ({
+                                    slotNumber: i + 1,
+                                    patient: null
+                                }))
+                            };
+                        }
+                    });
+                } else {
+                    // Initialize with default data if nothing is saved
+                    initializeAppointmentsData();
+                }
+            } catch (e) {
+                console.error('Error loading appointments data from localStorage:', e);
+                initializeAppointmentsData();
+            }
+        }
+
+        // Initialize appointments data with default structure
+        function initializeAppointmentsData() {
+            const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
+            
+            services.forEach(service => {
+                appointmentsData[service] = {
+                    morning: Array.from({length: 20}, (_, i) => ({
+                        slotNumber: i + 1,
+                        patient: null
+                    })),
+                    afternoon: Array.from({length: 20}, (_, i) => ({
+                        slotNumber: i + 1,
+                        patient: null
+                    }))
+                };
+            });
+            
+            // Datos de ejemplo
+            appointmentsData['ODONTOLOGIA'].morning[0].patient = {
+                name: 'María González',
+                ci: '12345678',
+                phone: '70123456',
+                registeredBy: 'admin',
+                registeredAt: new Date().toLocaleString('es-ES')
             };
-        });
+            appointmentsData['ODONTOLOGIA'].morning[2].patient = {
+                name: 'Juan Pérez',
+                ci: '87654321',
+                phone: '71234567',
+                registeredBy: 'doctor',
+                registeredAt: new Date().toLocaleString('es-ES')
+            };
+        }
 
-        // Datos de ejemplo
-        appointmentsData['ODONTOLOGIA'].morning[0].patient = {
-            name: 'María González',
-            ci: '12345678',
-            phone: '70123456',
-            registeredBy: 'admin',
-            registeredAt: new Date().toLocaleString('es-ES')
-        };
-        appointmentsData['ODONTOLOGIA'].morning[2].patient = {
-            name: 'Juan Pérez',
-            ci: '87654321',
-            phone: '71234567',
-            registeredBy: 'doctor',
-            registeredAt: new Date().toLocaleString('es-ES')
-        };
+        // Save data to localStorage
+        function saveAppointmentsData() {
+            try {
+                localStorage.setItem('appointmentsData', JSON.stringify(appointmentsData));
+            } catch (e) {
+                console.error('Error saving appointments data to localStorage:', e);
+            }
+        }
+
+        // Load data when the page loads
+        loadAppointmentsData();
+
+        // Modify the savePatient function to save data after changes
+        function savePatient() {
+            if (!isAuthenticated) {
+                alert('🔒 Error: Sesión no válida. Inicie sesión nuevamente.');
+                closeAppointmentModal();
+                return;
+            }
+            
+            const name = document.getElementById('patientName').value.trim();
+            const ci = document.getElementById('patientCI').value.trim();
+            const phone = document.getElementById('patientPhone').value.trim();
+
+            if (!name || !ci || !phone) {
+                alert('⚠️ favor, complete todos los campos');
+                return;
+            }
+
+            const existingPatient = appointmentsData[currentService][currentShift].find(
+                apt => apt.patient && apt.patient.ci === ci
+            );
+
+            if (existingPatient) {
+                alert('❌ Ya existe un paciente registrado con esta CI en este turno');
+                return;
+            }
+
+            const slotIndex = currentSlot - 1;
+            appointmentsData[currentService][currentShift][slotIndex].patient = {
+                name,
+                ci,
+                phone,
+                registeredBy: currentUser,
+                registeredAt: new Date().toLocaleString('es-ES')
+            };
+
+            // Save to localStorage
+            saveAppointmentsData();
+
+            cancelPatientForm();
+            updateAppointmentView();
+            alert(`✅ Paciente ${name} registrado exitosamente en la ficha #${currentSlot}\n👤 Registrado por: ${currentUser}`);
+        }
+
+        // Modify the removePatient function to save data after changes
+        function removePatient(slotNumber) {
+            if (!isAuthenticated) {
+                alert('🔒 Solo el personal autorizado puede liberar fichas.\nSi es personal médico, inicie sesión primero.');
+                return;
+            }
+            
+            if (confirm('🔐 ¿Está seguro de que desea liberar esta ficha?\n\n⚠️ Esta acción no se puede deshacer.')) {
+                const slotIndex = slotNumber - 1;
+                appointmentsData[currentService][currentShift][slotIndex].patient = null;
+                
+                // Save to localStorage
+                saveAppointmentsData();
+                
+                updateAppointmentView();
+                alert(`✅ Ficha #${slotNumber} liberada exitosamente\n👤 Acción realizada por: ${currentUser}`);
+            }
+        }
+
+        // Modify the registration form submission to save data
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if user is authenticated
+            if (!isAuthenticated) {
+                document.getElementById('loginModal').style.display = 'block';
+                document.getElementById('username').focus();
+                // Disable the submit button temporarily
+                const submitBtn = this.querySelector('.form-submit');
+                submitBtn.textContent = 'Autenticando...';
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Convert service name to match the appointment system
+            const serviceMapping = {
+                'odontologia': 'ODONTOLOGIA',
+                'Ginecologia': 'GINECOLOGIA',
+                'Pediatria': 'PEDIATRIA',
+                'Laboratorio': 'LABORATORIO',
+                'Ecografia': 'ECOGRAFIA',
+                'Medicina General': 'CONSULTA EXTERNA',
+                'Vacunas PAI': 'VACUNAS PAI',
+                'Emergencia': 'URGENCIAS'
+            };
+            
+            const serviceName = serviceMapping[data.servicio] || data.servicio.toUpperCase();
+            
+            // Use selected shift
+            const shift = data.turno || 'morning';
+            
+            // Find first available slot in the selected shift
+            let assigned = false;
+            let slotNumber = 0;
+            
+            if (appointmentsData[serviceName]) {
+                // First try the selected shift
+                for (let i = 0; i < appointmentsData[serviceName][shift].length; i++) {
+                    if (!appointmentsData[serviceName][shift][i].patient) {
+                        // Register patient in the first available slot
+                        appointmentsData[serviceName][shift][i].patient = {
+                            name: data.nombreCompleto,
+                            ci: data.ci,
+                            phone: data.telefono,
+                            registeredBy: currentUser,
+                            registeredAt: new Date().toLocaleString('es-ES'),
+                            seguro: data.seguro
+                        };
+                        assigned = true;
+                        slotNumber = i + 1;
+                        break;
+                    }
+                }
+                
+                // If no slots available in selected shift, try the other shift
+                if (!assigned) {
+                    const otherShift = shift === 'morning' ? 'afternoon' : 'morning';
+                    for (let i = 0; i < appointmentsData[serviceName][otherShift].length; i++) {
+                        if (!appointmentsData[serviceName][otherShift][i].patient) {
+                            appointmentsData[serviceName][otherShift][i].patient = {
+                                name: data.nombreCompleto,
+                                ci: data.ci,
+                                phone: data.telefono,
+                                registeredBy: currentUser,
+                                registeredAt: new Date().toLocaleString('es-ES'),
+                                seguro: data.seguro
+                            };
+                            assigned = true;
+                            slotNumber = i + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            const submitBtn = this.querySelector('.form-submit');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Registrando...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                if (assigned) {
+                    const shiftText = shift === 'morning' ? 'Mañana' : 'Tarde';
+                    alert(`¡Paciente registrado exitosamente!
+
+Nombre: ${data.nombreCompleto}
+CI: ${data.ci}
+Teléfono: ${data.telefono}
+Servicio: ${data.servicio}
+Seguro: ${data.seguro}
+Turno: ${shiftText}
+Ficha asignada: #${slotNumber}`);
+                    
+                    // Update the appointment view if the service modal is open
+                    if (currentService === serviceName) {
+                        updateAppointmentView();
+                    }
+                    
+                    // Save to localStorage
+                    saveAppointmentsData();
+                } else {
+                    alert(`¡Paciente registrado en lista de espera!
+
+Nombre: ${data.nombreCompleto}
+CI: ${data.ci}
+Teléfono: ${data.telefono}
+Servicio: ${data.servicio}
+Seguro: ${data.seguro}
+
+Nota: No hay fichas disponibles en este momento. Será contactado cuando haya disponibilidad.`);
+                }
+                
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
 
         function openAppointmentModal(serviceName) {
             currentService = serviceName;
@@ -1583,12 +1831,19 @@
                 const slotDiv = document.createElement('div');
                 slotDiv.className = `appointment-slot ${appointment.patient ? 'occupied' : ''}`;
                 
-                const patientInfo = appointment.patient ? 
-                    `<strong>${appointment.patient.name}</strong><br>
-                     CI: ${appointment.patient.ci}<br>
-                     Tel: ${appointment.patient.phone}
-                     ${appointment.patient.registeredBy ? `<br><small>👤 Por: ${appointment.patient.registeredBy}</small>` : ''}` : 
-                    'Ficha disponible';
+                let patientInfo = '';
+                if (appointment.patient) {
+                    patientInfo = `
+                        <strong>${appointment.patient.name}</strong><br>
+                        CI: ${appointment.patient.ci}<br>
+                        Tel: ${appointment.patient.phone}
+                        ${appointment.patient.seguro ? `<br>Seguro: ${appointment.patient.seguro}` : ''}
+                        ${appointment.patient.registeredBy ? `<br><small>👤 Por: ${appointment.patient.registeredBy}</small>` : ''}
+                        ${appointment.patient.registeredAt ? `<br><small>🕒 ${appointment.patient.registeredAt}</small>` : ''}
+                    `;
+                } else {
+                    patientInfo = 'Ficha disponible';
+                }
 
                 let actionButtons = '';
                 if (!appointment.patient) {
@@ -1653,59 +1908,6 @@
             currentSlot = null;
         }
 
-        function savePatient() {
-            if (!isAuthenticated) {
-                alert('🔒 Error: Sesión no válida. Inicie sesión nuevamente.');
-                closeAppointmentModal();
-                return;
-            }
-            
-            const name = document.getElementById('patientName').value.trim();
-            const ci = document.getElementById('patientCI').value.trim();
-            const phone = document.getElementById('patientPhone').value.trim();
-
-            if (!name || !ci || !phone) {
-                alert('⚠️ favor, complete todos los campos');
-                return;
-            }
-
-            const existingPatient = appointmentsData[currentService][currentShift].find(
-                apt => apt.patient && apt.patient.ci === ci
-            );
-
-            if (existingPatient) {
-                alert('❌ Ya existe un paciente registrado con esta CI en este turno');
-                return;
-            }
-
-            const slotIndex = currentSlot - 1;
-            appointmentsData[currentService][currentShift][slotIndex].patient = {
-                name,
-                ci,
-                phone,
-                registeredBy: currentUser,
-                registeredAt: new Date().toLocaleString('es-ES')
-            };
-
-            cancelPatientForm();
-            updateAppointmentView();
-            alert(`✅ Paciente ${name} registrado exitosamente en la ficha #${currentSlot}\n👤 Registrado por: ${currentUser}`);
-        }
-
-        function removePatient(slotNumber) {
-            if (!isAuthenticated) {
-                alert('🔒 Solo el personal autorizado puede liberar fichas.\nSi es personal médico, inicie sesión primero.');
-                return;
-            }
-            
-            if (confirm('🔐 ¿Está seguro de que desea liberar esta ficha?\n\n⚠️ Esta acción no se puede deshacer.')) {
-                const slotIndex = slotNumber - 1;
-                appointmentsData[currentService][currentShift][slotIndex].patient = null;
-                updateAppointmentView();
-                alert(`✅ Ficha #${slotNumber} liberada exitosamente\n👤 Acción realizada por: ${currentUser}`);
-            }
-        }
-
         // Función para exportar a Excel
         function exportToExcel() {
             if (typeof XLSX === 'undefined') {
@@ -1724,6 +1926,7 @@
                         'Nombre': apt.patient.name,
                         'CI': apt.patient.ci,
                         'Teléfono': apt.patient.phone,
+                        'Seguro': apt.patient.seguro || 'N/A',
                         'Registrado por': apt.patient.registeredBy || 'N/A',
                         'Fecha/Hora': apt.patient.registeredAt || 'N/A',
                         'Estado': 'Ocupada'
@@ -1734,6 +1937,7 @@
                         'Nombre': '-',
                         'CI': '-',
                         'Teléfono': '-',
+                        'Seguro': '-',
                         'Registrado por': '-',
                         'Fecha/Hora': '-',
                         'Estado': 'Disponible'
@@ -1751,6 +1955,7 @@
                 { wch: 25 }, // Nombre
                 { wch: 12 }, // CI
                 { wch: 15 }, // Teléfono
+                { wch: 12 }, // Seguro
                 { wch: 18 }, // Registrado por
                 { wch: 20 }, // Fecha/Hora
                 { wch: 12 }  // Estado
@@ -1768,6 +1973,33 @@
             XLSX.writeFile(wb, fileName);
             
             alert(`✅ Archivo Excel exportado exitosamente:\n${fileName}`);
+        }
+
+        function searchPatients(query) {
+            const appointments = appointmentsData[currentService][currentShift];
+            const searchResults = appointments.filter(apt => apt.patient && apt.patient.name.toLowerCase().includes(query.toLowerCase()));
+
+            document.getElementById('searchResults').innerHTML = '';
+            searchResults.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'search-result';
+                resultDiv.innerHTML = `
+                    <div class="slot-number">Ficha #${result.slotNumber}</div>
+                    <div class="patient-info">
+                        <strong>${result.patient.name}</strong><br>
+                        CI: ${result.patient.ci}<br>
+                        Tel: ${result.patient.phone}
+                        ${result.patient.seguro ? `<br>Seguro: ${result.patient.seguro}` : ''}
+                        ${result.patient.registeredBy ? `<br><small>👤 Por: ${result.patient.registeredBy}</small>` : ''}
+                        ${result.patient.registeredAt ? `<br><small>🕒 ${result.patient.registeredAt}</small>` : ''}
+                    </div>
+                `;
+                document.getElementById('searchResults').appendChild(resultDiv);
+            });
+
+            if (searchResults.length === 0) {
+                document.getElementById('searchResults').innerHTML = '<p>No se encontraron resultados.</p>';
+            }
         }
 
         // Cerrar modal al hacer clic fuera
@@ -1821,6 +2053,7 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({
@@ -1829,27 +2062,6 @@
                     });
                 }
             });
-        });
-
-        // Formulario de registro principal
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            const submitBtn = this.querySelector('.form-submit');
-            const originalText = submitBtn.textContent;
-            
-            submitBtn.textContent = 'Registrando...';
-            submitBtn.disabled = true;
-            
-            setTimeout(() => {
-                alert(`¡Paciente registrado exitosamente!\n\nNombre: ${data.nombreCompleto}\nCI: ${data.ci}\nTeléfono: ${data.telefono}\nServicio: ${data.servicio}\nSeguro: ${data.seguro}`);
-                this.reset();
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }, 2000);
         });
 
         // Formulario de reclamos
@@ -1965,4 +2177,5 @@
         });
     </script>
 </body>
+
 </html>
