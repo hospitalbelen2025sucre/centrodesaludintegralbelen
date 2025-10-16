@@ -1181,7 +1181,17 @@
             <h2 class="section-title">Estadística</h2>
             <div class="stats-container">
                 <p style="color: #374151; font-size: 1rem;">Indicadores estadísticos relevantes del centro de salud</p>
-                
+                <div class="enhanced-features">
+                    <h3 class="features-title">🔗 Acceso al Sistema</h3>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <span class="feature-icon">🖥️</span>
+                            <a href="pap-system.html" class="feature-text" style="text-decoration: none; color: inherit;">
+                                Sistema de Gestión PAP
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">👥</div>
@@ -1200,7 +1210,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">⏱️</div>
-                        <div class="stat-number">15 min</div>
+                        <div class="stat-number">25 min</div>
                         <div class="stat-label">Tiempo Promedio</div>
                     </div>
                 </div>
@@ -1235,8 +1245,8 @@
                         <div class="service-info">
                             <div class="service-name">VACUNAS PAI</div>
                             <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 14:00</span></div>
+                                <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
                             </div>
                             <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
                         </div>
@@ -1260,7 +1270,7 @@
                             <div class="service-icon">🩺</div>
                         </div>
                         <div class="service-info">
-                            <div class="service-name">CONSULTA EXTERNA</div>
+                            <div class="service-name">CONSULTA EXTERNA MED. 1-2</div>
                             <div class="service-hours">
                                 <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
                                 <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
@@ -1287,13 +1297,13 @@
                     <!-- Ginecología -->
                     <div class="service-card" onclick="openAppointmentModal('GINECOLOGIA')">
                         <div class="service-icon-container">
-                            <div class="service-icon"> busty</div>
+                            <div class="service-icon"> GINE</div>
                         </div>
                         <div class="service-info">
                             <div class="service-name">GINECOLOGIA</div>
                             <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 11:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 15:00</span></div>
+                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 13:00</span></div>
+                                <div><span class="time-label">Tarde:</span> <span class="time-text">00:00 a 00:00</span></div>
                             </div>
                             <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
                         </div>
@@ -1350,7 +1360,10 @@
                             <h4 id="shiftTitle">Turno Mañana</h4>
                             <div>
                                 <span class="available-slots" id="availableSlots">20 fichas disponibles</span>
+
+
                                 <button class="export-btn" onclick="exportToExcel()">📊 Exportar a Excel</button>
+                                <button class="export-btn" onclick="exportToPDF()">📄 Exportar a PDF</button>
                             </div>
                         </div>
                         
@@ -2177,5 +2190,4 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
         });
     </script>
 </body>
-
 </html>
