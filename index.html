@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro de Salud Integral BELÉN - Página Completa</title>
+    <title>Centro de Salud Integral BELÉN - Sistema Unificado</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -15,6 +16,8 @@
         :root {
             --color-primary: #dc2626;
             --color-primary-dark: #991b1b;
+            --color-secondary: #667eea;
+            --color-secondary-dark: #764ba2;
             --color-white: #ffffff;
             --color-gray-100: #f3f4f6;
             --color-gray-200: #e5e7eb;
@@ -28,6 +31,8 @@
             margin: 0;
             padding: 0;
             scroll-behavior: smooth;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
 
         /* Navigation */
@@ -88,11 +93,91 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         @media (min-width: 640px) {
             .nav-links {
                 display: flex;
             }
         }
+        
+        /* Main Content */
+        .main-content {
+            margin-top: 4rem;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Section Container */
+        .section-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .section-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .section-content {
+            padding: 40px;
+        }
+        
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab-button {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--color-primary);
+            border-bottom: 3px solid var(--color-primary);
+            background: rgba(220, 38, 38, 0.05);
+        }
+        
+        .tab-button:hover:not(.active) {
+            background: #e9ecef;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
         /* Main Hero Section */
         .main-section {
             position: relative;
@@ -790,6 +875,21 @@
             color: white;
         }
 
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66 0%, #2f9e44 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #339af0 0%, #1864ab 100%);
+            color: white;
+        }
+
         .btn:hover {
             transform: scale(1.05);
         }
@@ -981,6 +1081,120 @@
             color: var(--color-gray-800);
         }
 
+        /* PAP System Styles */
+        .stats-container-pap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card-pap {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card-pap:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card-pap .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card-pap .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .stat-card-pap .label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .search-result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
         /* Responsive improvements */
         @media (max-width: 768px) {
             .hero-container {
@@ -1008,11 +1222,26 @@
             .service-hours {
                 font-size: 0.75rem;
             }
+            
+            .tab-navigation {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                width: 100%;
+                text-align: center;
+            }
         }
 
         @media (max-width: 480px) {
             .services-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .appointments-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
             }
         }
 
@@ -1057,9 +1286,12 @@
                     <p>CENTRO DE SALUD INTEGRAL "BELEN"</p>
                 </div>
                 <div class="nav-links">
-                   <a href="#estadistica">ESTADISTICA</a>
+                    <a href="#" class="active" onclick="showSection('main'); return false;">INICIO</a>
+                    <a href="#" onclick="showSection('appointments'); return false;">CITAS MÉDICAS</a>
+                    <a href="#" onclick="showSection('pap'); return false;">SISTEMA PAP</a>
+                    <a href="#estadistica">ESTADÍSTICAS</a>
                     <a href="#servicios">SERVICIOS</a>
-                    <a href="#reclamos">RECLAMOS Y SUGERENCIAS</a>
+                    <a href="#reclamos">RECLAMOS</a>
                 </div>
             </div>
         </nav>
@@ -1097,363 +1329,567 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-section">
-        <!-- Hero Section -->
-        <div class="hero-container">
-            <div class="hero-content fade-in">
-                <!-- Logo SVG -->
-                <svg class="medical-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo del Centro de Salud Integral Belen">
-                    <defs>
-                        <path id="logo-circular-path" d="M 100,30 a 70,70 0 1,1 0,140 a 70,70 0 1,1 0,-140" fill="none"/>
-                    </defs>
-                    <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#dc2626" stroke-width="10"/>
-                    <circle cx="100" cy="100" r="42" fill="#dc2626"/>
-                    <rect x="82" y="94" width="36" height="12" fill="#ffffff" rx="1"/>
-                    <rect x="94" y="82" width="12" height="36" fill="#ffffff" rx="1"/>
-                    <text style="font-family: Inter, sans-serif; font-size: 17.5px; font-weight: 600; letter-spacing: 1.5px; fill: #dc2626;" text-anchor="middle">
-                        <textPath href="#logo-circular-path" startOffset="35%">CENTRO DE SALUD INTEGRAL</textPath>
-                    </text>
-                    <text style="font-family: Inter, sans-serif; font-size: 17.5px; font-weight: 900; letter-spacing: 5px; fill: #dc2626;" text-anchor="middle">
-                        <textPath href="#logo-circular-path" startOffset="85%">"BELEN"</textPath>
-                    </text>
-                </svg>
+    <!-- Main Sections -->
+    <div class="main-content">
+        <!-- Main Website Section -->
+        <div id="main-section" class="section active">
+            <!-- Main Content -->
+            <main class="main-section">
+                <!-- Hero Section -->
+                <div class="hero-container">
+                    <div class="hero-content fade-in">
+                        <!-- Logo SVG -->
+                        <svg class="medical-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo del Centro de Salud Integral Belen">
+                            <defs>
+                                <path id="logo-circular-path" d="M 100,30 a 70,70 0 1,1 0,140 a 70,70 0 1,1 0,-140" fill="none"/>
+                            </defs>
+                            <circle cx="100" cy="100" r="95" fill="#ffffff" stroke="#dc2626" stroke-width="10"/>
+                            <circle cx="100" cy="100" r="42" fill="#dc2626"/>
+                            <rect x="82" y="94" width="36" height="12" fill="#ffffff" rx="1"/>
+                            <rect x="94" y="82" width="12" height="36" fill="#ffffff" rx="1"/>
+                            <text style="font-family: Inter, sans-serif; font-size: 17.5px; font-weight: 600; letter-spacing: 1.5px; fill: #dc2626;" text-anchor="middle">
+                                <textPath href="#logo-circular-path" startOffset="35%">CENTRO DE SALUD INTEGRAL</textPath>
+                            </text>
+                            <text style="font-family: Inter, sans-serif; font-size: 17.5px; font-weight: 900; letter-spacing: 5px; fill: #dc2626;" text-anchor="middle">
+                                <textPath href="#logo-circular-path" startOffset="85%">"BELEN"</textPath>
+                            </text>
+                        </svg>
 
-                <h1 class="hero-title">CENTRO DE SALUD INTEGRAL "BELEN"</h1>
-                <p class="hero-subtitle">Atención las 24 horas</p>
-            </div>
+                        <h1 class="hero-title">CENTRO DE SALUD INTEGRAL "BELEN"</h1>
+                        <p class="hero-subtitle">Atención las 24 horas</p>
+                    </div>
 
-            <div class="form-container">
-                <div class="registration-form fade-in">
-                    <h2 class="form-title">📋 Registro de Pacientes</h2>
-                    <form id="registrationForm">
-                        <div class="form-group">
-                            <label for="nombreCompleto">Nombre Completo *</label>
-                            <input type="text" id="nombreCompleto" name="nombreCompleto" required>
+                    <div class="form-container">
+                        <div class="registration-form fade-in">
+                            <h2 class="form-title">📋 Registro de Pacientes</h2>
+                            <form id="registrationForm">
+                                <div class="form-group">
+                                    <label for="nombreCompleto">Nombre Completo *</label>
+                                    <input type="text" id="nombreCompleto" name="nombreCompleto" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ci">Carnet de Identidad *</label>
+                                    <input type="text" id="ci" name="ci" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="telefono">Teléfono *</label>
+                                    <input type="tel" id="telefono" name="telefono" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="servicio">Servicio Solicitado *</label>
+                                    <select id="servicio" name="servicio" required>
+                                        <option value="">Seleccionar servicio</option>
+                                        <option value="odontologia">Odontología</option>
+                                        <option value="Ginecologia">Ginecología</option>
+                                        <option value="Pediatria">Pediatría</option>
+                                        <option value="Laboratorio">Laboratorio</option>
+                                        <option value="Ecografia">Ecografía</option>
+                                        <option value="Medicina General">Medicina General</option>
+                                        <option value="Vacunas PAI">Vacunas PAI</option>
+                                        <option value="Emergencia">Emergencia</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seguro">Verificación de Seguro *</label>
+                                    <select id="seguro" name="seguro" required>
+                                        <option value="">Seleccionar Seguro</option>
+                                        <option value="SUS">SUS</option>
+                                        <option value="Caja Privada">Caja Privada</option>
+                                        <option value="Ninguno">Ninguno</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="turno">Turno *</label>
+                                    <select id="turno" name="turno" required>
+                                        <option value="">Seleccionar Turno</option>
+                                        <option value="morning">Mañana</option>
+                                        <option value="afternoon">Tarde</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="form-submit">Registrar Paciente</button>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label for="ci">Carnet de Identidad *</label>
-                            <input type="text" id="ci" name="ci" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono">Teléfono *</label>
-                            <input type="tel" id="telefono" name="telefono" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="servicio">Servicio Solicitado *</label>
-                            <select id="servicio" name="servicio" required>
-                                <option value="">Seleccionar servicio</option>
-                                <option value="odontologia">Odontología</option>
-                                <option value="Ginecologia">Ginecología</option>
-                                <option value="Pediatria">Pediatría</option>
-                                <option value="Laboratorio">Laboratorio</option>
-                                <option value="Ecografia">Ecografía</option>
-                                <option value="Medicina General">Medicina General</option>
-                                <option value="Vacunas PAI">Vacunas PAI</option>
-                                <option value="Emergencia">Emergencia</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="seguro">Verificación de Seguro *</label>
-                            <select id="seguro" name="seguro" required>
-                                <option value="">Seleccionar Seguro</option>
-                                <option value="SUS">SUS</option>
-                                <option value="Caja Privada">Caja Privada</option>
-                                <option value="Ninguno">Ninguno</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="turno">Turno *</label>
-                            <select id="turno" name="turno" required>
-                                <option value="">Seleccionar Turno</option>
-                                <option value="morning">Mañana</option>
-                                <option value="afternoon">Tarde</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="form-submit">Registrar Paciente</button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Statistics Section -->
+                <section id="estadistica" class="statistics-section scroll-animation">
+                    <h2 class="section-title">Estadística</h2>
+                    <div class="stats-container">
+                        <p style="color: #374151; font-size: 1rem;">Indicadores estadísticos relevantes del centro de salud</p>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-number">2,847</div>
+                                <div class="stat-label">Pacientes Atendidos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⭐</div>
+                                <div class="stat-number">98%</div>
+                                <div class="stat-label">Satisfacción</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🚑</div>
+                                <div class="stat-number">456</div>
+                                <div class="stat-label">Emergencias</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-number">25 min</div>
+                                <div class="stat-label">Tiempo Promedio</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section id="servicios" class="services-section">
+                    <h2 class="services-title">Atención de Servicios de Lunes a Viernes</h2>
+                    <div class="services-container">
+                        <div class="services-grid">
+                            <!-- Odontología -->
+                            <div class="service-card" onclick="openAppointmentModal('ODONTOLOGIA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🦷</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">ODONTOLOGIA</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Vacunas PAI -->
+                            <div class="service-card" onclick="openAppointmentModal('VACUNAS PAI')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">💉</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">VACUNAS PAI</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 14:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Urgencias -->
+                            <div class="service-card" onclick="openAppointmentModal('URGENCIAS')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🚑</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">URGENCIAS</div>
+                                    <div class="service-24h">ATENCIÓN LAS 24 HORAS</div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Consulta Externa -->
+                            <div class="service-card" onclick="openAppointmentModal('CONSULTA EXTERNA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🩺</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">CONSULTA EXTERNA MED. 1-2</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Laboratorio -->
+                            <div class="service-card" onclick="openAppointmentModal('LABORATORIO')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🔬</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">LABORATORIO</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Ginecología -->
+                            <div class="service-card" onclick="openAppointmentModal('GINECOLOGIA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon"> GINE</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">GINECOLOGIA</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">00:00 a 00:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Pediatría -->
+                            <div class="service-card" onclick="openAppointmentModal('PEDIATRIA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">👶</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">PEDIATRIA</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 11:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Ecografía -->
+                            <div class="service-card" onclick="openAppointmentModal('ECOGRAFIA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">📡</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">ECOGRAFIA</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Modal for Appointments -->
+                <div id="appointmentModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="modalTitle">Gestión de Fichas</h3>
+                            <span class="close" onclick="closeAppointmentModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="shift-tabs">
+                                <button class="shift-tab active" onclick="switchShift('morning')">Turno Mañana</button>
+                                <button class="shift-tab" onclick="switchShift('afternoon')">Turno Tarde</button>
+                            </div>
+                            
+                            <div class="appointments-container">
+                                <div class="appointments-header">
+                                    <h4 id="shiftTitle">Turno Mañana</h4>
+                                    <div>
+                                        <span class="available-slots" id="availableSlots">20 fichas disponibles</span>
+                                        <button class="export-btn" onclick="exportToExcel()">📊 Exportar a Excel</button>
+                                        <button class="export-btn" onclick="exportToPDF()">📄 Exportar a PDF</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="appointment-grid" id="appointmentGrid">
+                                    <!-- Las fichas se generan dinámicamente -->
+                                </div>
+                                
+                                <div class="patient-form" id="patientForm" style="display: none;">
+                                    <h5>Registrar Nuevo Paciente</h5>
+                                    <div class="form-group">
+                                        <label for="patientName">Nombre Completo:</label>
+                                        <input type="text" id="patientName" placeholder="Ingrese el nombre completo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="patientCI">Cédula de Identidad:</label>
+                                        <input type="text" id="patientCI" placeholder="Ingrese la CI">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="patientPhone">Teléfono:</label>
+                                        <input type="text" id="patientPhone" placeholder="Ingrese el teléfono">
+                                    </div>
+                                    <div class="form-actions">
+                                        <button class="btn btn-secondary" onclick="cancelPatientForm()">Cancelar</button>
+                                        <button class="btn btn-primary" onclick="savePatient()">Guardar Paciente</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reclamos y Sugerencias Section -->
+                <section id="reclamos" class="reclamos-section scroll-animation">
+                    <h2 class="section-title">Reclamos y Sugerencias</h2>
+                    <div class="reclamos-container">
+                        <p style="margin-bottom: 1rem; color: #374151;">¿Tienes algún reclamo o sugerencia? Por favor déjanos tu comentario:</p>
+                        
+                        <form class="reclamos-form" id="reclamosForm">
+                            <input type="text" placeholder="Nombre (opcional)" class="reclamos-input">
+                            <textarea required placeholder="¿Cuál es tu reclamo o sugerencia?" rows="4" class="reclamos-input reclamos-textarea"></textarea>
+                            <button type="submit" class="reclamos-submit">Enviar</button>
+                        </form>
+
+                        <!-- Mapa virtual -->
+                        <div class="map-section">
+                            <h3 class="map-title">Ubicación del establecimiento</h3>
+                            <div class="map-container">
+                                <iframe
+                                    title="Ubicación Centro de Salud Belén"
+                                    class="map-iframe"
+                                    loading="lazy"
+                                    allowfullscreen
+                                    src="https://www.google.com/maps?q=-19.02495338,-65.3015633&z=17&output=embed">
+                                </iframe>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Features -->
+                        <div class="enhanced-features">
+                            <h3 class="features-title">💬 Más Formas de Contacto</h3>
+                            <div class="features-grid">
+                                <div class="feature-item">
+                                    <span class="feature-icon">📞</span>
+                                    <span class="feature-text">+591 4-123-4567</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">🚑</span>
+                                    <span class="feature-text">Emergencias 24/7</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">📧</span>
+                                    <span class="feature-text">info@centrosaludbelen.bo</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">💬</span>
+                                    <span class="feature-text">WhatsApp: +591 70317124</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">🕒</span>
+                                    <span class="feature-text">Lun-Vie: 7:00-19:00</span>
+                                </div>
+                                <div class="feature-item">
+                                    <span class="feature-icon">📍</span>
+                                    <span class="feature-text">Barrio Belén, Sucre-Bolivia</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
 
-        <!-- Statistics Section -->
-        <section id="estadistica" class="statistics-section scroll-animation">
-            <h2 class="section-title">Estadística</h2>
-            <div class="stats-container">
-                <p style="color: #374151; font-size: 1rem;">Indicadores estadísticos relevantes del centro de salud</p>
-                <div class="enhanced-features">
-                    <h3 class="features-title">🔗 Acceso al Sistema</h3>
-                    <div class="features-grid">
-                        <div class="feature-item">
-                            <span class="feature-icon">🖥️</span>
-                            <a href="pap-system.html" class="feature-text" style="text-decoration: none; color: inherit;">
-                                Sistema de Gestión PAP
-                            </a>
-                        </div>
-                    </div>
+        <!-- Appointments Section -->
+        <div id="appointments-section" class="section" style="display: none;">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>📅 Gestión de Citas Médicas</h1>
+                    <p>Sistema de administración de citas y turnos</p>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">👥</div>
-                        <div class="stat-number">2,847</div>
-                        <div class="stat-label">Pacientes Atendidos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-number">98%</div>
-                        <div class="stat-label">Satisfacción</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🚑</div>
-                        <div class="stat-number">456</div>
-                        <div class="stat-label">Emergencias</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-number">25 min</div>
-                        <div class="stat-label">Tiempo Promedio</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Services Section -->
-        <section id="servicios" class="services-section">
-            <h2 class="services-title">Atención de Servicios de Lunes a Viernes</h2>
-            <div class="services-container">
-                <div class="services-grid">
-                    <!-- Odontología -->
-                    <div class="service-card" onclick="openAppointmentModal('ODONTOLOGIA')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">🦷</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">ODONTOLOGIA</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Vacunas PAI -->
-                    <div class="service-card" onclick="openAppointmentModal('VACUNAS PAI')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">💉</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">VACUNAS PAI</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 14:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Urgencias -->
-                    <div class="service-card" onclick="openAppointmentModal('URGENCIAS')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">🚑</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">URGENCIAS</div>
-                            <div class="service-24h">ATENCIÓN LAS 24 HORAS</div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Consulta Externa -->
-                    <div class="service-card" onclick="openAppointmentModal('CONSULTA EXTERNA')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">🩺</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">CONSULTA EXTERNA MED. 1-2</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Laboratorio -->
-                    <div class="service-card" onclick="openAppointmentModal('LABORATORIO')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">🔬</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">LABORATORIO</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Ginecología -->
-                    <div class="service-card" onclick="openAppointmentModal('GINECOLOGIA')">
-                        <div class="service-icon-container">
-                            <div class="service-icon"> GINE</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">GINECOLOGIA</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">00:00 a 00:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Pediatría -->
-                    <div class="service-card" onclick="openAppointmentModal('PEDIATRIA')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">👶</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">PEDIATRIA</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 11:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-
-                    <!-- Ecografía -->
-                    <div class="service-card" onclick="openAppointmentModal('ECOGRAFIA')">
-                        <div class="service-icon-container">
-                            <div class="service-icon">📡</div>
-                        </div>
-                        <div class="service-info">
-                            <div class="service-name">ECOGRAFIA</div>
-                            <div class="service-hours">
-                                <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
-                                <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
-                            </div>
-                            <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Modal for Appointments -->
-        <div id="appointmentModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="modalTitle">Gestión de Fichas</h3>
-                    <span class="close" onclick="closeAppointmentModal()">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="shift-tabs">
-                        <button class="shift-tab active" onclick="switchShift('morning')">Turno Mañana</button>
-                        <button class="shift-tab" onclick="switchShift('afternoon')">Turno Tarde</button>
+                <div class="section-content">
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="openTab(event, 'appointment-management')">Gestión de Citas</button>
+                        <button class="tab-button" onclick="openTab(event, 'appointment-reports')">Reportes</button>
                     </div>
                     
-                    <div class="appointments-container">
-                        <div class="appointments-header">
-                            <h4 id="shiftTitle">Turno Mañana</h4>
-                            <div>
-                                <span class="available-slots" id="availableSlots">20 fichas disponibles</span>
-
-
-                                <button class="export-btn" onclick="exportToExcel()">📊 Exportar a Excel</button>
-                                <button class="export-btn" onclick="exportToPDF()">📄 Exportar a PDF</button>
-                            </div>
-                        </div>
+                    <div id="appointment-management" class="tab-content active">
+                        <h2>Gestión de Citas Médicas</h2>
+                        <p>Seleccione un servicio para gestionar las citas:</p>
                         
-                        <div class="appointment-grid" id="appointmentGrid">
-                            <!-- Las fichas se generan dinámicamente -->
+                        <div class="services-grid">
+                            <!-- Odontología -->
+                            <div class="service-card" onclick="openAppointmentModal('ODONTOLOGIA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🦷</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">ODONTOLOGIA</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Vacunas PAI -->
+                            <div class="service-card" onclick="openAppointmentModal('VACUNAS PAI')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">💉</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">VACUNAS PAI</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">08:00 a 14:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">14:00 a 17:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Urgencias -->
+                            <div class="service-card" onclick="openAppointmentModal('URGENCIAS')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🚑</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">URGENCIAS</div>
+                                    <div class="service-24h">ATENCIÓN LAS 24 HORAS</div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
+
+                            <!-- Consulta Externa -->
+                            <div class="service-card" onclick="openAppointmentModal('CONSULTA EXTERNA')">
+                                <div class="service-icon-container">
+                                    <div class="service-icon">🩺</div>
+                                </div>
+                                <div class="service-info">
+                                    <div class="service-name">CONSULTA EXTERNA MED. 1-2</div>
+                                    <div class="service-hours">
+                                        <div><span class="time-label">Mañana:</span> <span class="time-text">07:00 a 13:00</span></div>
+                                        <div><span class="time-label">Tarde:</span> <span class="time-text">13:00 a 19:00</span></div>
+                                    </div>
+                                    <button class="view-appointments-btn">Ver Fichas y Pacientes</button>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="patient-form" id="patientForm" style="display: none;">
-                            <h5>Registrar Nuevo Paciente</h5>
-                            <div class="form-group">
-                                <label for="patientName">Nombre Completo:</label>
-                                <input type="text" id="patientName" placeholder="Ingrese el nombre completo">
-                            </div>
-                            <div class="form-group">
-                                <label for="patientCI">Cédula de Identidad:</label>
-                                <input type="text" id="patientCI" placeholder="Ingrese la CI">
-                            </div>
-                            <div class="form-group">
-                                <label for="patientPhone">Teléfono:</label>
-                                <input type="text" id="patientPhone" placeholder="Ingrese el teléfono">
-                            </div>
-                            <div class="form-actions">
-                                <button class="btn btn-secondary" onclick="cancelPatientForm()">Cancelar</button>
-                                <button class="btn btn-primary" onclick="savePatient()">Guardar Paciente</button>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <div id="appointment-reports" class="tab-content">
+                        <h2>Reportes de Citas</h2>
+                        <p>Generar reportes de citas médicas:</p>
+                        <button class="btn btn-success" onclick="generateAppointmentReport()">📊 Generar Reporte de Citas</button>
+                        <button class="btn btn-info" onclick="exportAllAppointments()">📤 Exportar Todas las Citas</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Reclamos y Sugerencias Section -->
-        <section id="reclamos" class="reclamos-section scroll-animation">
-            <h2 class="section-title">Reclamos y Sugerencias</h2>
-            <div class="reclamos-container">
-                <p style="margin-bottom: 1rem; color: #374151;">¿Tienes algún reclamo o sugerencia? Por favor déjanos tu comentario:</p>
+        <!-- PAP System Section -->
+        <div id="pap-section" class="section" style="display: none;">
+            <div class="section-container">
+                <div class="section-header">
+                    <h1>🔍 Sistema de Gestión de Informes de Pruebas PAP</h1>
+                    <p>Búsqueda, consulta y eliminación de resultados de Papanicolaou</p>
+                    <p>Capacidad de almacenamiento: 3,000 pacientes</p>
+                </div>
                 
-                <form class="reclamos-form" id="reclamosForm">
-                    <input type="text" placeholder="Nombre (opcional)" class="reclamos-input">
-                    <textarea required placeholder="¿Cuál es tu reclamo o sugerencia?" rows="4" class="reclamos-input reclamos-textarea"></textarea>
-                    <button type="submit" class="reclamos-submit">Enviar</button>
-                </form>
-
-                <!-- Mapa virtual -->
-                <div class="map-section">
-                    <h3 class="map-title">Ubicación del establecimiento</h3>
-                    <div class="map-container">
-                        <iframe
-                            title="Ubicación Centro de Salud Belén"
-                            class="map-iframe"
-                            loading="lazy"
-                            allowfullscreen
-                            src="https://www.google.com/maps?q=-19.02495338,-65.3015633&z=17&output=embed">
-                        </iframe>
+                <div class="stats-container-pap">
+                    <div class="stat-card-pap">
+                        <div class="icon">📊</div>
+                        <div class="number" id="storedReports">0</div>
+                        <div class="label">Informes Almacenados</div>
+                    </div>
+                    <div class="stat-card-pap">
+                        <div class="icon">💾</div>
+                        <div class="number" id="totalCapacity">3,000</div>
+                        <div class="label">Capacidad Total</div>
+                    </div>
+                    <div class="stat-card-pap">
+                        <div class="icon">📈</div>
+                        <div class="number" id="usagePercentage">0%</div>
+                        <div class="label">Uso del Sistema</div>
+                    </div>
+                    <div class="stat-card-pap">
+                        <div class="icon">✅</div>
+                        <div class="number" id="availableSpace">3,000</div>
+                        <div class="label">Espacio Disponible</div>
                     </div>
                 </div>
-
-                <!-- Enhanced Features -->
-                <div class="enhanced-features">
-                    <h3 class="features-title">💬 Más Formas de Contacto</h3>
-                    <div class="features-grid">
-                        <div class="feature-item">
-                            <span class="feature-icon">📞</span>
-                            <span class="feature-text">+591 4-123-4567</span>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;">0% Utilizado</div>
+                </div>
+                
+                <div class="section-content">
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="openTab(event, 'pap-search')">Buscar Informe</button>
+                        <button class="tab-button" onclick="openTab(event, 'pap-list')">Lista de Informes</button>
+                        <button class="tab-button" onclick="openTab(event, 'pap-delete')">Eliminar Informe</button>
+                        <button class="tab-button" onclick="openTab(event, 'pap-import')">Importar/Exportar</button>
+                    </div>
+                    
+                    <div id="pap-search" class="tab-content active">
+                        <h2 class="section-title">🔎 Buscar Informe PAP</h2>
+                        <div class="form-group">
+                            <label>Nombre del Paciente:</label>
+                            <input type="text" id="nombrePaciente" class="form-control" placeholder="Ingrese el nombre completo">
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">🚑</span>
-                            <span class="feature-text">Emergencias 24/7</span>
+                        <div class="form-group">
+                            <label>Carnet de Identidad:</label>
+                            <input type="text" id="ciPaciente" class="form-control" placeholder="Ingrese el CI">
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">📧</span>
-                            <span class="feature-text">info@centrosaludbelen.bo</span>
+                        <div class="form-group">
+                            <label>Fecha de Examen:</label>
+                            <input type="date" id="fechaExamen" class="form-control">
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">💬</span>
-                            <span class="feature-text">WhatsApp: +591 70317124</span>
+                        <button class="btn btn-primary" onclick="buscarInforme()">🔍 Buscar Informe</button>
+                        
+                        <div class="search-result" id="resultadoBusqueda">
+                            <p>Los resultados aparecerán aquí después de realizar la búsqueda</p>
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">🕒</span>
-                            <span class="feature-text">Lun-Vie: 7:00-19:00</span>
+                    </div>
+                    
+                    <div id="pap-list" class="tab-content">
+                        <h2 class="section-title">📋 Lista de Informes PAP</h2>
+                        <div id="listaInformes">
+                            <table id="tablaInformes">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>CI</th>
+                                        <th>Fecha de Examen</th>
+                                        <th>Resultado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpoTabla">
+                                    <!-- Data will be populated here -->
+                                </tbody>
+                            </table>
+                            <div id="noDataMessage" class="no-data">No hay informes registrados</div>
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">📍</span>
-                            <span class="feature-text">Barrio Belén, Sucre-Bolivia</span>
+                    </div>
+                    
+                    <div id="pap-delete" class="tab-content">
+                        <h2 class="section-title">🗑️ Eliminar Informe</h2>
+                        <div class="form-group">
+                            <label>CI del Paciente a Eliminar:</label>
+                            <input type="text" id="ciEliminar" class="form-control" placeholder="Ingrese el CI del paciente">
+                        </div>
+                        <div class="warning">
+                            <strong>⚠️ Advertencia:</strong> Esta acción no se puede deshacer
+                        </div>
+                        <button class="btn btn-danger" onclick="eliminarInforme()">🗑️ Eliminar Informe</button>
+                    </div>
+                    
+                    <div id="pap-import" class="tab-content">
+                        <h2 class="section-title">📥 Exportar e Importar Base de Datos PAP</h2>
+                        
+                        <h3><strong>Descargar Base de Datos Completa</strong></h3>
+                        <div class="btn-group">
+                            <button class="btn btn-success" onclick="descargarExcelPAP()">📊 Descargar Excel - Informes PAP</button>
+                        </div>
+                        
+                        <h3 style="margin-top: 30px;"><strong>Cargar/Actualizar Base de Datos</strong></h3>
+                        <div class="form-group">
+                            <label>📎 Seleccionar Archivo Excel</label>
+                            <input type="file" id="archivoExcel" class="form-control" accept=".xlsx,.xls">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-info" onclick="importarDatos()">⬆️ Importar Datos PAP</button>
+                            <button class="btn btn-primary" onclick="descargarPlantilla()">📋 Descargar Plantilla PAP</button>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <strong>📊 Estadísticas:</strong> <span id="statsText">0 informes almacenados de 3,000 disponibles</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </div>
 
     <script>
         // Sistema de autenticación
@@ -1462,10 +1898,117 @@
         let pendingSlot = null;
 
         const validCredentials = {
-    'admin': 'medico2024',
-    'doctor': 'salud123',
-    'enfermera': 'cuidados2024'
-};
+            'admin': 'medico2024',
+            'doctor': 'salud123',
+            'enfermera': 'cuidados2024'
+        };
+
+        // Unified data management
+        let appointmentsData = {};
+        let papReports = [];
+
+        // Load all data from localStorage
+        function loadData() {
+            try {
+                // Load appointment data
+                const savedAppointments = localStorage.getItem('appointmentsData');
+                if (savedAppointments) {
+                    appointmentsData = JSON.parse(savedAppointments);
+                } else {
+                    initializeAppointmentsData();
+                }
+                
+                // Load PAP data
+                const savedPAP = localStorage.getItem('papReports');
+                if (savedPAP) {
+                    papReports = JSON.parse(savedPAP);
+                } else {
+                    initializePAPData();
+                }
+            } catch (e) {
+                console.error('Error loading data from localStorage:', e);
+                initializeAppointmentsData();
+                initializePAPData();
+            }
+        }
+
+        // Initialize appointments data with default structure
+        function initializeAppointmentsData() {
+            const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
+            
+            services.forEach(service => {
+                appointmentsData[service] = {
+                    morning: Array.from({length: 20}, (_, i) => ({
+                        slotNumber: i + 1,
+                        patient: null
+                    })),
+                    afternoon: Array.from({length: 20}, (_, i) => ({
+                        slotNumber: i + 1,
+                        patient: null
+                    }))
+                };
+            });
+            
+            // Datos de ejemplo
+            appointmentsData['ODONTOLOGIA'].morning[0].patient = {
+                name: 'María González',
+                ci: '12345678',
+                phone: '70123456',
+                registeredBy: 'admin',
+                registeredAt: new Date().toLocaleString('es-ES')
+            };
+            appointmentsData['ODONTOLOGIA'].morning[2].patient = {
+            name: 'Juan Pérez',
+                ci: '87654321',
+                phone: '71234567',
+                registeredBy: 'doctor',
+                registeredAt: new Date().toLocaleString('es-ES')
+            };
+        }
+
+        // Initialize PAP data
+        function initializePAPData() {
+            papReports = [
+                { id: 1, nombre: "María López", ci: "12345678", fecha: "2023-05-15", resultado: "Normal", observaciones: "Sin alteraciones detectadas" },
+                { id: 2, nombre: "Ana García", ci: "23456789", fecha: "2023-06-20", resultado: "Anormal", observaciones: "Requiere seguimiento" },
+                { id: 3, nombre: "Laura Pérez", ci: "34567890", fecha: "2023-07-10", resultado: "Normal", observaciones: "Sin alteraciones detectadas" }
+            ];
+        }
+
+        // Save all data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem('appointmentsData', JSON.stringify(appointmentsData));
+                localStorage.setItem('papReports', JSON.stringify(papReports));
+            } catch (e) {
+                console.error('Error saving data to localStorage:', e);
+            }
+        }
+
+        // Initialize data when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            actualizarEstadisticas();
+            actualizarListaInformes();
+            
+            // Enter en login
+            ['username', 'password'].forEach(id => {
+                document.getElementById(id).addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        authenticate();
+                    }
+                });
+            });
+
+            // Enter en formulario de pacientes
+            ['patientName', 'patientCI', 'patientPhone'].forEach(id => {
+                document.getElementById(id).addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        savePatient();
+                    }
+                });
+            });
+        });
 
         function authenticate() {
             const username = document.getElementById('username').value.trim();
@@ -1536,85 +2079,6 @@
         let currentService = '';
         let currentShift = 'morning';
         let currentSlot = null;
-        let appointmentsData = {};
-
-        // Load data from localStorage or initialize with default data
-        function loadAppointmentsData() {
-            try {
-                const savedData = localStorage.getItem('appointmentsData');
-                if (savedData) {
-                    appointmentsData = JSON.parse(savedData);
-                    // Ensure all services exist in the data
-                    const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
-                    services.forEach(service => {
-                        if (!appointmentsData[service]) {
-                            appointmentsData[service] = {
-                                morning: Array.from({length: 20}, (_, i) => ({
-                                    slotNumber: i + 1,
-                                    patient: null
-                                })),
-                                afternoon: Array.from({length: 20}, (_, i) => ({
-                                    slotNumber: i + 1,
-                                    patient: null
-                                }))
-                            };
-                        }
-                    });
-                } else {
-                    // Initialize with default data if nothing is saved
-                    initializeAppointmentsData();
-                }
-            } catch (e) {
-                console.error('Error loading appointments data from localStorage:', e);
-                initializeAppointmentsData();
-            }
-        }
-
-        // Initialize appointments data with default structure
-        function initializeAppointmentsData() {
-            const services = ['ODONTOLOGIA', 'VACUNAS PAI', 'URGENCIAS', 'CONSULTA EXTERNA', 'LABORATORIO', 'GINECOLOGIA', 'PEDIATRIA', 'ECOGRAFIA'];
-            
-            services.forEach(service => {
-                appointmentsData[service] = {
-                    morning: Array.from({length: 20}, (_, i) => ({
-                        slotNumber: i + 1,
-                        patient: null
-                    })),
-                    afternoon: Array.from({length: 20}, (_, i) => ({
-                        slotNumber: i + 1,
-                        patient: null
-                    }))
-                };
-            });
-            
-            // Datos de ejemplo
-            appointmentsData['ODONTOLOGIA'].morning[0].patient = {
-                name: 'María González',
-                ci: '12345678',
-                phone: '70123456',
-                registeredBy: 'admin',
-                registeredAt: new Date().toLocaleString('es-ES')
-            };
-            appointmentsData['ODONTOLOGIA'].morning[2].patient = {
-                name: 'Juan Pérez',
-                ci: '87654321',
-                phone: '71234567',
-                registeredBy: 'doctor',
-                registeredAt: new Date().toLocaleString('es-ES')
-            };
-        }
-
-        // Save data to localStorage
-        function saveAppointmentsData() {
-            try {
-                localStorage.setItem('appointmentsData', JSON.stringify(appointmentsData));
-            } catch (e) {
-                console.error('Error saving appointments data to localStorage:', e);
-            }
-        }
-
-        // Load data when the page loads
-        loadAppointmentsData();
 
         // Modify the savePatient function to save data after changes
         function savePatient() {
@@ -1652,7 +2116,7 @@
             };
 
             // Save to localStorage
-            saveAppointmentsData();
+            saveData();
 
             cancelPatientForm();
             updateAppointmentView();
@@ -1671,7 +2135,7 @@
                 appointmentsData[currentService][currentShift][slotIndex].patient = null;
                 
                 // Save to localStorage
-                saveAppointmentsData();
+                saveData();
                 
                 updateAppointmentView();
                 alert(`✅ Ficha #${slotNumber} liberada exitosamente\n👤 Acción realizada por: ${currentUser}`);
@@ -1782,7 +2246,7 @@ Ficha asignada: #${slotNumber}`);
                     }
                     
                     // Save to localStorage
-                    saveAppointmentsData();
+                    saveData();
                 } else {
                     alert(`¡Paciente registrado en lista de espera!
 
@@ -1988,31 +2452,256 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             alert(`✅ Archivo Excel exportado exitosamente:\n${fileName}`);
         }
 
-        function searchPatients(query) {
-            const appointments = appointmentsData[currentService][currentShift];
-            const searchResults = appointments.filter(apt => apt.patient && apt.patient.name.toLowerCase().includes(query.toLowerCase()));
+        function exportToPDF() {
+            alert('Funcionalidad de exportación a PDF no implementada en esta demostración.\nEn una implementación real, esto generaría y descargaría un archivo PDF con los datos de las fichas.');
+        }
 
-            document.getElementById('searchResults').innerHTML = '';
-            searchResults.forEach(result => {
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'search-result';
-                resultDiv.innerHTML = `
-                    <div class="slot-number">Ficha #${result.slotNumber}</div>
-                    <div class="patient-info">
-                        <strong>${result.patient.name}</strong><br>
-                        CI: ${result.patient.ci}<br>
-                        Tel: ${result.patient.phone}
-                        ${result.patient.seguro ? `<br>Seguro: ${result.patient.seguro}` : ''}
-                        ${result.patient.registeredBy ? `<br><small>👤 Por: ${result.patient.registeredBy}</small>` : ''}
-                        ${result.patient.registeredAt ? `<br><small>🕒 ${result.patient.registeredAt}</small>` : ''}
+        function generateAppointmentReport() {
+            alert('Funcionalidad de generación de reportes no implementada en esta demostración.\nEn una implementación real, esto generaría un reporte detallado de todas las citas médicas.');
+        }
+
+        function exportAllAppointments() {
+            alert('Funcionalidad de exportación de todas las citas no implementada en esta demostración.\nEn una implementación real, esto exportaría todas las citas médicas registradas.');
+        }
+
+        // PAP System Functions
+        function actualizarEstadisticas() {
+            const total = 3000;
+            const almacenados = papReports.length;
+            const porcentaje = ((almacenados / total) * 100).toFixed(1);
+            const disponibles = total - almacenados;
+            
+            document.getElementById('storedReports').textContent = almacenados.toLocaleString();
+            document.getElementById('totalCapacity').textContent = total.toLocaleString();
+            document.getElementById('usagePercentage').textContent = porcentaje + '%';
+            document.getElementById('availableSpace').textContent = disponibles.toLocaleString();
+            document.getElementById('progressFill').style.width = porcentaje + '%';
+            document.getElementById('progressFill').textContent = porcentaje + '% Utilizado';
+            document.getElementById('statsText').textContent = `${almacenados.toLocaleString()} informes almacenados de ${total.toLocaleString()} disponibles`;
+        }
+        
+        function actualizarListaInformes() {
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            const noDataMessage = document.getElementById('noDataMessage');
+            
+            // Clear existing data
+            cuerpoTabla.innerHTML = '';
+            
+            if (papReports.length === 0) {
+                noDataMessage.style.display = 'block';
+                return;
+            }
+            
+            noDataMessage.style.display = 'none';
+            
+            // Populate table with data
+            papReports.forEach(report => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${report.nombre}</td>
+                    <td>${report.ci}</td>
+                    <td>${report.fecha}</td>
+                    <td>${report.resultado}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="verDetalle(${report.id})">Ver</button>
+                        <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
+                    </td>
+                `;
+                cuerpoTabla.appendChild(row);
+            });
+        }
+        
+        function buscarInforme() {
+            const nombre = document.getElementById('nombrePaciente').value.trim();
+            const ci = document.getElementById('ciPaciente').value.trim();
+            const fecha = document.getElementById('fechaExamen').value;
+            
+            if (!nombre && !ci && !fecha) {
+                alert('Por favor ingrese al menos un criterio de búsqueda');
+                return;
+            }
+            
+            // Filter reports based on search criteria
+            const resultados = papReports.filter(report => {
+                return (
+                    (nombre === '' || report.nombre.toLowerCase().includes(nombre.toLowerCase())) &&
+                    (ci === '' || report.ci.includes(ci)) &&
+                    (fecha === '' || report.fecha === fecha)
+                );
+            });
+            
+            if (resultados.length === 0) {
+                document.getElementById('resultadoBusqueda').innerHTML = `
+                    <p>No se encontraron resultados para los criterios de búsqueda proporcionados.</p>
+                `;
+                return;
+            }
+            
+            // Display results
+            let resultadosHTML = '<h3>Resultados encontrados:</h3>';
+            resultados.forEach(report => {
+                resultadosHTML += `
+                    <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <p><strong>Nombre:</strong> ${report.nombre}</p>
+                        <p><strong>CI:</strong> ${report.ci}</p>
+                        <p><strong>Fecha de Examen:</strong> ${report.fecha}</p>
+                        <p><strong>Resultado:</strong> ${report.resultado}</p>
+                        <p><strong>Observaciones:</strong> ${report.observaciones}</p>
+                        <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
                     </div>
                 `;
-                document.getElementById('searchResults').appendChild(resultDiv);
             });
-
-            if (searchResults.length === 0) {
-                document.getElementById('searchResults').innerHTML = '<p>No se encontraron resultados.</p>';
+            
+            document.getElementById('resultadoBusqueda').innerHTML = resultadosHTML;
+        }
+        
+        function verDetalle(id) {
+            const report = papReports.find(r => r.id === id);
+            if (report) {
+                document.getElementById('resultadoBusqueda').innerHTML = `
+                    <h3>Detalle del Informe</h3>
+                    <p><strong>Nombre:</strong> ${report.nombre}</p>
+                    <p><strong>CI:</strong> ${report.ci}</p>
+                    <p><strong>Fecha de Examen:</strong> ${report.fecha}</p>
+                    <p><strong>Resultado:</strong> ${report.resultado}</p>
+                    <p><strong>Observaciones:</strong> ${report.observaciones}</p>
+                `;
             }
+        }
+        
+        function eliminarInforme() {
+            const ci = document.getElementById('ciEliminar').value.trim();
+            
+            if (!ci) {
+                alert('Por favor ingrese el CI del paciente');
+                return;
+            }
+            
+            const index = papReports.findIndex(report => report.ci === ci);
+            
+            if (index === -1) {
+                alert('No se encontró ningún informe con ese CI');
+                return;
+            }
+            
+            if (confirm('¿Está seguro de eliminar este informe? Esta acción no se puede deshacer.')) {
+                papReports.splice(index, 1);
+                alert('Informe eliminado exitosamente');
+                document.getElementById('ciEliminar').value = '';
+                actualizarListaInformes();
+                actualizarEstadisticas();
+                saveData();
+            }
+        }
+        
+        function eliminarInformePorId(id) {
+            const index = papReports.findIndex(report => report.id === id);
+            
+            if (index === -1) {
+                alert('No se encontró el informe');
+                return;
+            }
+            
+            if (confirm('¿Está seguro de eliminar este informe? Esta acción no se puede deshacer.')) {
+                papReports.splice(index, 1);
+                alert('Informe eliminado exitosamente');
+                actualizarListaInformes();
+                actualizarEstadisticas();
+                saveData();
+                
+                // Clear search results
+                document.getElementById('resultadoBusqueda').innerHTML = '<p>Los resultados aparecerán aquí después de realizar la búsqueda</p>';
+            }
+        }
+        
+        function descargarExcelPAP() {
+            if (typeof XLSX === 'undefined') {
+                alert('⚠️ Error: La librería de Excel no está cargada correctamente.');
+                return;
+            }
+            
+            // Preparar datos para Excel
+            const excelData = papReports.map(report => ({
+                'ID': report.id,
+                'Nombre': report.nombre,
+                'CI': report.ci,
+                'Fecha de Examen': report.fecha,
+                'Resultado': report.resultado,
+                'Observaciones': report.observaciones
+            }));
+
+            // Crear libro de trabajo
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // Ajustar ancho de columnas
+            const colWidths = [
+                { wch: 5 },   // ID
+                { wch: 25 },  // Nombre
+                { wch: 12 },  // CI
+                { wch: 15 },  // Fecha
+                { wch: 15 },  // Resultado
+                { wch: 30 }   // Observaciones
+            ];
+            ws['!cols'] = colWidths;
+
+            // Agregar hoja al libro
+            XLSX.utils.book_append_sheet(wb, ws, 'Informes PAP');
+
+            // Generar nombre de archivo
+            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+            const fileName = `Informes_PAP_${fecha}.xlsx`;
+
+            // Descargar archivo
+            XLSX.writeFile(wb, fileName);
+            
+            alert(`✅ Archivo Excel exportado exitosamente:\n${fileName}`);
+        }
+        
+        function importarDatos() {
+            const archivo = document.getElementById('archivoExcel').files[0];
+            
+            if (!archivo) {
+                alert('Por favor seleccione un archivo Excel');
+                return;
+            }
+            
+            alert('Funcionalidad de importación no implementada en esta demostración.\nEn una implementación real, esto procesaría el archivo Excel y actualizaría la base de datos PAP.');
+        }
+        
+        function descargarPlantilla() {
+            alert('Funcionalidad de descarga de plantilla no implementada en esta demostración.\nEn una implementación real, esto descargaría una plantilla Excel para importar datos PAP.');
+        }
+
+        // Navigation functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('main-section').style.display = 'none';
+            document.getElementById('appointments-section').style.display = 'none';
+            document.getElementById('pap-section').style.display = 'none';
+            
+            // Show selected section
+            document.getElementById(sectionId + '-section').style.display = 'block';
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show the current tab and add active class to the button
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
 
         // Cerrar modal al hacer clic fuera
@@ -2022,27 +2711,6 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 closeAppointmentModal();
             }
         }
-
-        // Eventos del DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enter en login
-            ['username', 'password'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        authenticate();
-                    }
-                });
-            });
-
-            // Enter en formulario de pacientes
-            ['patientName', 'patientCI', 'patientPhone'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        savePatient();
-                    }
-                });
-            });
-        });
 
         // Animaciones de scroll
         function animateOnScroll() {
