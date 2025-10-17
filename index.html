@@ -1832,6 +1832,7 @@
                                         <th>Fecha de Examen</th>
                                         <th>Resultado</th>
                                         <th>Acciones</th>
+                                        <th>Corregir</th>
                                     </tr>
                                 </thead>
                                 <tbody id="cuerpoTabla">
@@ -2594,6 +2595,9 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                         <button class="btn btn-primary" onclick="verDetalleModal(${report.id})">Ver</button>
                         <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
                     </td>
+                    <td>
+                        <button class="btn btn-warning" onclick="corregirInforme(${report.id})">Corregir</button>
+                    </td>
                 `;
                 cuerpoTabla.appendChild(row);
             });
@@ -2644,6 +2648,9 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                     <td>
                         <button class="btn btn-primary" onclick="verDetalleModal(${report.id})">Ver</button>
                         <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" onclick="corregirInforme(${report.id})">Corregir</button>
                     </td>
                 `;
                 cuerpoTabla.appendChild(row);
@@ -2766,6 +2773,221 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 saveData();
                 
 
+            }
+        }
+        
+        // Function to correct/edit PAP report data
+        function corregirInforme(id) {
+            // Check if user is authenticated as admin
+            if (!isAuthenticated || currentUser !== 'admin') {
+                // Show login modal for admin authentication
+                showAdminLoginModal(id);
+                return;
+            }
+            
+            openCorrectionModal(id);
+        }
+        
+        // Function to show admin login modal
+        function showAdminLoginModal(reportId) {
+            // Create login modal if it doesn't exist
+            let modal = document.getElementById('adminLoginModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'adminLoginModal';
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 400px;">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <h3 class="modal-title">🔐 Autenticación Requerida</h3>
+                            <span class="close" onclick="cerrarModalAdminLogin()">&times;</span>
+                        </div>
+                        <div class="modal-body" id="modalAdminLoginBody">
+                            <!-- Content will be populated here -->
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            
+            // Populate modal content with login form
+            document.getElementById('modalAdminLoginBody').innerHTML = `
+                <div style="padding: 20px;">
+                    <h3 style="color: #667eea; margin-bottom: 20px; text-align: center;">Autenticación de Administrador</h3>
+                    <p style="text-align: center; margin-bottom: 20px;">Se requiere autenticación de administrador para corregir informes</p>
+                    
+                    <div class="form-group">
+                        <label><strong>Usuario:</strong></label>
+                        <input type="text" id="adminUsername" class="form-control" placeholder="Ingrese usuario" value="admin">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Contraseña:</strong></label>
+                        <input type="password" id="adminPassword" class="form-control" placeholder="Ingrese contraseña">
+                    </div>
+                    
+                    <div id="adminLoginError" style="color: red; text-align: center; margin: 10px 0; display: none;"></div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="cerrarModalAdminLogin()">Cancelar</button>
+                        <button class="btn btn-primary" onclick="validateAdminLogin(${reportId})">Iniciar Sesión</button>
+                    </div>
+                </div>
+            `;
+            
+            // Show modal
+            modal.style.display = 'block';
+        }
+        
+        // Function to close admin login modal
+        function cerrarModalAdminLogin() {
+            const modal = document.getElementById('adminLoginModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Function to validate admin login
+        function validateAdminLogin(reportId) {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('adminLoginError');
+            
+            // Check credentials (admin with medico2024)
+            if (username === 'admin' && password === 'medico2024') {
+                // Authentication successful
+                isAuthenticated = true;
+                currentUser = 'admin';
+                
+                // Close login modal
+                cerrarModalAdminLogin();
+                
+                // Open correction modal
+                openCorrectionModal(reportId);
+            } else {
+                // Authentication failed
+                errorDiv.textContent = 'Usuario o contraseña incorrectos';
+                errorDiv.style.display = 'block';
+                
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+        
+        // Function to open correction modal
+        function openCorrectionModal(id) {
+            const report = papReports.find(r => r.id === id);
+            if (report) {
+                // Create correction modal if it doesn't exist
+                let modal = document.getElementById('correccionModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'correccionModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 600px;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <h3 class="modal-title">Corregir Informe PAP</h3>
+                                <span class="close" onclick="cerrarModalCorreccion()">&times;</span>
+                            </div>
+                            <div class="modal-body" id="modalCorreccionBody">
+                                <!-- Content will be populated here -->
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                
+                // Populate modal content with form
+                document.getElementById('modalCorreccionBody').innerHTML = `
+                    <div style="padding: 20px;">
+                        <h3 style="color: #667eea; margin-bottom: 20px; text-align: center;">Editar Informe de ${report.nombre}</h3>
+                        <p style="text-align: center; color: #667eea; margin-bottom: 15px;">Autenticado como: ${currentUser}</p>
+                        
+                        <div class="form-group">
+                            <label><strong>Nombre del Paciente:</strong></label>
+                            <input type="text" id="editNombre" class="form-control" value="${report.nombre}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><strong>Carnet de Identidad:</strong></label>
+                            <input type="text" id="editCI" class="form-control" value="${report.ci}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><strong>Fecha de Examen:</strong></label>
+                            <input type="date" id="editFecha" class="form-control" value="${report.fecha}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><strong>Resultado:</strong></label>
+                            <select id="editResultado" class="form-control">
+                                <option value="Normal" ${report.resultado === 'Normal' ? 'selected' : ''}>Normal</option>
+                                <option value="Anormal" ${report.resultado === 'Anormal' ? 'selected' : ''}>Anormal</option>
+                                <option value="Inconcluso" ${report.resultado === 'Inconcluso' ? 'selected' : ''}>Inconcluso</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><strong>Observaciones:</strong></label>
+                            <textarea id="editObservaciones" class="form-control" rows="4">${report.observaciones || ''}</textarea>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="cerrarModalCorreccion()">Cancelar</button>
+                            <button class="btn btn-primary" onclick="guardarCorreccion(${report.id})">Guardar Cambios</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Show modal
+                modal.style.display = 'block';
+            }
+        }
+        
+        // Function to close correction modal
+        function cerrarModalCorreccion() {
+            const modal = document.getElementById('correccionModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Function to save corrections
+        function guardarCorreccion(id) {
+            const report = papReports.find(r => r.id === id);
+            if (report) {
+                // Get updated values from form
+                const nombre = document.getElementById('editNombre').value.trim();
+                const ci = document.getElementById('editCI').value.trim();
+                const fecha = document.getElementById('editFecha').value;
+                const resultado = document.getElementById('editResultado').value;
+                const observaciones = document.getElementById('editObservaciones').value.trim();
+                
+                // Validate required fields
+                if (!nombre || !ci || !fecha || !resultado) {
+                    alert('Por favor complete todos los campos obligatorios');
+                    return;
+                }
+                
+                // Update report data
+                report.nombre = nombre;
+                report.ci = ci;
+                report.fecha = fecha;
+                report.resultado = resultado;
+                report.observaciones = observaciones;
+                
+                // Save to localStorage
+                saveData();
+                
+                // Update the table view
+                actualizarListaInformes();
+                
+                // Close modal
+                cerrarModalCorreccion();
+                
+                // Show success message
+                alert('Informe actualizado exitosamente');
             }
         }
         
@@ -2948,11 +3170,17 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
         window.onclick = function(event) {
             const appointmentModal = document.getElementById('appointmentModal');
             const detalleModal = document.getElementById('detalleModal');
+            const correccionModal = document.getElementById('correccionModal');
+            const adminLoginModal = document.getElementById('adminLoginModal');
             
             if (event.target == appointmentModal) {
                 closeAppointmentModal();
             } else if (event.target == detalleModal) {
                 cerrarModalDetalle();
+            } else if (event.target == correccionModal) {
+                cerrarModalCorreccion();
+            } else if (event.target == adminLoginModal) {
+                cerrarModalAdminLogin();
             }
         }
         
@@ -2961,11 +3189,17 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             if (event.key === 'Escape') {
                 const appointmentModal = document.getElementById('appointmentModal');
                 const detalleModal = document.getElementById('detalleModal');
+                const correccionModal = document.getElementById('correccionModal');
+                const adminLoginModal = document.getElementById('adminLoginModal');
                 
                 if (appointmentModal && appointmentModal.style.display === 'block') {
                     closeAppointmentModal();
                 } else if (detalleModal && detalleModal.style.display === 'block') {
                     cerrarModalDetalle();
+                } else if (correccionModal && correccionModal.style.display === 'block') {
+                    cerrarModalCorreccion();
+                } else if (adminLoginModal && adminLoginModal.style.display === 'block') {
+                    cerrarModalAdminLogin();
                 }
             }
         });
