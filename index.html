@@ -1804,35 +1804,25 @@
                 
                 <div class="section-content">
                     <div class="tab-navigation">
-                        <button class="tab-button active" onclick="openTab(event, 'pap-search')">Buscar Informe</button>
-                        <button class="tab-button" onclick="openTab(event, 'pap-list')">Lista de Informes</button>
+                        <button class="tab-button active" onclick="openTab(event, 'pap-list')">Lista de Informes</button>
                         <button class="tab-button" onclick="openTab(event, 'pap-delete')">Eliminar Informe</button>
                         <button class="tab-button" onclick="openTab(event, 'pap-import')">Importar/Exportar</button>
-                    </div>
-                    
-                    <div id="pap-search" class="tab-content active">
-                        <h2 class="section-title">🔎 Buscar Informe PAP</h2>
-                        <div class="form-group">
-                            <label>Nombre del Paciente:</label>
-                            <input type="text" id="nombrePaciente" class="form-control" placeholder="Ingrese el nombre completo">
-                        </div>
-                        <div class="form-group">
-                            <label>Carnet de Identidad:</label>
-                            <input type="text" id="ciPaciente" class="form-control" placeholder="Ingrese el CI">
-                        </div>
-                        <div class="form-group">
-                            <label>Fecha de Examen:</label>
-                            <input type="date" id="fechaExamen" class="form-control">
-                        </div>
-                        <button class="btn btn-primary" onclick="buscarInforme()">🔍 Buscar Informe</button>
-                        
-                        <div class="search-result" id="resultadoBusqueda">
-                            <p>Los resultados aparecerán aquí después de realizar la búsqueda</p>
-                        </div>
+                        <button class="tab-button" onclick="openTab(event, 'pap-batch')">Agregar Lotes</button>
                     </div>
                     
                     <div id="pap-list" class="tab-content">
                         <h2 class="section-title">📋 Lista de Informes PAP</h2>
+                        
+                        <!-- Search functionality -->
+                        <div class="form-group">
+                            <label>Buscar por Nombre del Paciente:</label>
+                            <input type="text" id="searchNombre" class="form-control" placeholder="Ingrese el nombre del paciente" onkeyup="filtrarInformes()">
+                        </div>
+                        <div class="form-group">
+                            <label>Buscar por Carnet de Identidad:</label>
+                            <input type="text" id="searchCI" class="form-control" placeholder="Ingrese el CI" onkeyup="filtrarInformes()">
+                        </div>
+                        
                         <div id="listaInformes">
                             <table id="tablaInformes">
                                 <thead>
@@ -1886,6 +1876,32 @@
                             <strong>📊 Estadísticas:</strong> <span id="statsText">0 informes almacenados de 3,000 disponibles</span>
                         </div>
                     </div>
+                    
+                    <div id="pap-batch" class="tab-content">
+                        <h2 class="section-title">📦 Agregar Lotes de Informes PAP</h2>
+                        <p>Agregue múltiples informes PAP al mismo tiempo ingresando los datos a continuación:</p>
+                        
+                        <div class="form-group">
+                            <label>Datos de los Pacientes (uno por línea, formato: Nombre,CI,Fecha,Resultado,Observaciones):</label>
+                            <textarea id="batchData" class="form-control" rows="10" placeholder="Ejemplo:\nMaría López,12345678,2023-05-15,Normal,Sin alteraciones\nAna García,23456789,2023-06-20,Anormal,Requiere seguimiento"></textarea>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-success" onclick="addBatchPAPRecords()">➕ Agregar Lote de Informes</button>
+                            <button class="btn btn-info" onclick="clearBatchData()">🧹 Limpiar Datos</button>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <strong>💡 Instrucciones:</strong>
+                            <ul>
+                                <li>Ingrese un registro por línea</li>
+                                <li>Use el formato: Nombre,CI,Fecha,Resultado,Observaciones</li>
+                                <li>La fecha debe estar en formato AAAA-MM-DD</li>
+                                <li>Los campos deben estar separados por comas</li>
+                                <li>El campo de observaciones es opcional</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1922,8 +1938,10 @@
                 const savedPAP = localStorage.getItem('papReports');
                 if (savedPAP) {
                     papReports = JSON.parse(savedPAP);
+                    console.log('Loaded PAP reports from localStorage:', papReports);
                 } else {
                     initializePAPData();
+                    console.log('Initialized PAP reports with default data:', papReports);
                 }
             } catch (e) {
                 console.error('Error loading data from localStorage:', e);
@@ -1971,8 +1989,15 @@
             papReports = [
                 { id: 1, nombre: "María López", ci: "12345678", fecha: "2023-05-15", resultado: "Normal", observaciones: "Sin alteraciones detectadas" },
                 { id: 2, nombre: "Ana García", ci: "23456789", fecha: "2023-06-20", resultado: "Anormal", observaciones: "Requiere seguimiento" },
-                { id: 3, nombre: "Laura Pérez", ci: "34567890", fecha: "2023-07-10", resultado: "Normal", observaciones: "Sin alteraciones detectadas" }
+                { id: 3, nombre: "Laura Pérez", ci: "34567890", fecha: "2023-07-10", resultado: "Normal", observaciones: "Sin alteraciones detectadas" },
+                // Additional sample data
+                { id: 4, nombre: "Carmen Ruiz", ci: "45678901", fecha: "2023-08-05", resultado: "Normal", observaciones: "Sin alteraciones detectadas" },
+                { id: 5, nombre: "Sofía Martínez", ci: "56789012", fecha: "2023-08-18", resultado: "Anormal", observaciones: "Requiere seguimiento" },
+                { id: 6, nombre: "Elena González", ci: "67890123", fecha: "2023-09-02", resultado: "Normal", observaciones: "Sin alteraciones detectadas" },
+                { id: 7, nombre: "Patricia Jiménez", ci: "78901234", fecha: "2023-09-15", resultado: "Inconcluso", observaciones: "Repetir examen" },
+                { id: 8, nombre: "Isabel Rodríguez", ci: "89012345", fecha: "2023-09-28", resultado: "Normal", observaciones: "Sin alteraciones detectadas" }
             ];
+            console.log('Initialized PAP data with', papReports.length, 'records');
         }
 
         // Save all data to localStorage
@@ -1983,6 +2008,68 @@
             } catch (e) {
                 console.error('Error saving data to localStorage:', e);
             }
+        }
+        
+
+
+        // Add a new PAP record to the database
+        function addPAPRecord(nombre, ci, fecha, resultado, observaciones) {
+            // Generate a new ID (find the max ID and add 1)
+            const newId = papReports.length > 0 ? Math.max(...papReports.map(r => r.id)) + 1 : 1;
+            
+            // Create the new record
+            const newRecord = {
+                id: newId,
+                nombre: nombre,
+                ci: ci,
+                fecha: fecha,
+                resultado: resultado,
+                observaciones: observaciones
+            };
+            
+            // Add to the database
+            papReports.push(newRecord);
+            
+            // Save to localStorage
+            saveData();
+            
+            // Update the UI
+            actualizarListaInformes();
+            actualizarEstadisticas();
+            
+            return newRecord;
+        }
+
+        // Add multiple PAP records at once
+        function addPAPRecordsBatch(records) {
+            if (!Array.isArray(records)) {
+                console.error('Records must be an array');
+                return [];
+            }
+            
+            const addedRecords = [];
+            
+            records.forEach(record => {
+                // Validate required fields
+                if (record.nombre && record.ci && record.fecha && record.resultado) {
+                    const newRecord = addPAPRecord(
+                        record.nombre,
+                        record.ci,
+                        record.fecha,
+                        record.resultado,
+                        record.observaciones || ''
+                    );
+                    addedRecords.push(newRecord);
+                } else {
+                    console.warn('Skipping invalid record:', record);
+                }
+            });
+            
+            if (addedRecords.length > 0) {
+                alert(`✅ ${addedRecords.length} registros agregados exitosamente a la base de datos PAP.`);
+            }
+            
+            return addedRecords;
         }
 
         // Initialize data when the page loads
@@ -2481,6 +2568,7 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
         }
         
         function actualizarListaInformes() {
+            console.log('Updating PAP list with', papReports.length, 'records');
             const cuerpoTabla = document.getElementById('cuerpoTabla');
             const noDataMessage = document.getElementById('noDataMessage');
             
@@ -2501,9 +2589,9 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                     <td>${report.nombre}</td>
                     <td>${report.ci}</td>
                     <td>${report.fecha}</td>
-                    <td>${report.resultado}</td>
+                    <td><span style="font-weight: bold; color: ${report.resultado === 'Normal' ? 'green' : report.resultado === 'Anormal' ? 'red' : 'orange'}">${report.resultado}</span></td>
                     <td>
-                        <button class="btn btn-primary" onclick="verDetalle(${report.id})">Ver</button>
+                        <button class="btn btn-primary" onclick="verDetalleModal(${report.id})">Ver</button>
                         <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
                     </td>
                 `;
@@ -2511,61 +2599,129 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             });
         }
         
-        function buscarInforme() {
-            const nombre = document.getElementById('nombrePaciente').value.trim();
-            const ci = document.getElementById('ciPaciente').value.trim();
-            const fecha = document.getElementById('fechaExamen').value;
+        // Filter PAP reports based on search criteria
+        function filtrarInformes() {
+            const nombre = document.getElementById('searchNombre').value.trim().toLowerCase();
+            const ci = document.getElementById('searchCI').value.trim();
             
-            if (!nombre && !ci && !fecha) {
-                alert('Por favor ingrese al menos un criterio de búsqueda');
+            // If no search criteria, show all reports
+            if (!nombre && !ci) {
+                actualizarListaInformes();
                 return;
             }
             
             // Filter reports based on search criteria
-            const resultados = papReports.filter(report => {
-                return (
-                    (nombre === '' || report.nombre.toLowerCase().includes(nombre.toLowerCase())) &&
-                    (ci === '' || report.ci.includes(ci)) &&
-                    (fecha === '' || report.fecha === fecha)
-                );
+            const filteredReports = papReports.filter(report => {
+                const nombreMatch = nombre === '' || report.nombre.toLowerCase().includes(nombre);
+                const ciMatch = ci === '' || report.ci.includes(ci);
+                
+                return nombreMatch && ciMatch;
             });
             
-            if (resultados.length === 0) {
-                document.getElementById('resultadoBusqueda').innerHTML = `
-                    <p>No se encontraron resultados para los criterios de búsqueda proporcionados.</p>
-                `;
+            // Update the table with filtered results
+            const cuerpoTabla = document.getElementById('cuerpoTabla');
+            const noDataMessage = document.getElementById('noDataMessage');
+            
+            // Clear existing data
+            cuerpoTabla.innerHTML = '';
+            
+            if (filteredReports.length === 0) {
+                noDataMessage.style.display = 'block';
+                noDataMessage.innerHTML = 'No se encontraron informes que coincidan con los criterios de búsqueda';
                 return;
             }
             
-            // Display results
-            let resultadosHTML = '<h3>Resultados encontrados:</h3>';
-            resultados.forEach(report => {
-                resultadosHTML += `
-                    <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <p><strong>Nombre:</strong> ${report.nombre}</p>
-                        <p><strong>CI:</strong> ${report.ci}</p>
-                        <p><strong>Fecha de Examen:</strong> ${report.fecha}</p>
-                        <p><strong>Resultado:</strong> ${report.resultado}</p>
-                        <p><strong>Observaciones:</strong> ${report.observaciones}</p>
-                        <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
-                    </div>
-                `;
-            });
+            noDataMessage.style.display = 'none';
             
-            document.getElementById('resultadoBusqueda').innerHTML = resultadosHTML;
+            // Populate table with filtered data
+            filteredReports.forEach(report => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${report.nombre}</td>
+                    <td>${report.ci}</td>
+                    <td>${report.fecha}</td>
+                    <td><span style="font-weight: bold; color: ${report.resultado === 'Normal' ? 'green' : report.resultado === 'Anormal' ? 'red' : 'orange'}">${report.resultado}</span></td>
+                    <td>
+                        <button class="btn btn-primary" onclick="verDetalleModal(${report.id})">Ver</button>
+                        <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar</button>
+                    </td>
+                `;
+                cuerpoTabla.appendChild(row);
+            });
         }
         
-        function verDetalle(id) {
+
+        
+
+        
+        // Modal detailed view function
+        function verDetalleModal(id) {
             const report = papReports.find(r => r.id === id);
             if (report) {
-                document.getElementById('resultadoBusqueda').innerHTML = `
-                    <h3>Detalle del Informe</h3>
-                    <p><strong>Nombre:</strong> ${report.nombre}</p>
-                    <p><strong>CI:</strong> ${report.ci}</p>
-                    <p><strong>Fecha de Examen:</strong> ${report.fecha}</p>
-                    <p><strong>Resultado:</strong> ${report.resultado}</p>
-                    <p><strong>Observaciones:</strong> ${report.observaciones}</p>
+                // Create modal if it doesn't exist
+                let modal = document.getElementById('detalleModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'detalleModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 600px;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <h3 class="modal-title">Detalles del Informe PAP</h3>
+                                <span class="close" onclick="cerrarModalDetalle()">&times;</span>
+                            </div>
+                            <div class="modal-body" id="modalDetalleBody">
+                                <!-- Content will be populated here -->
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                
+                // Populate modal content
+                document.getElementById('modalDetalleBody').innerHTML = `
+                    <div style="padding: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #667eea; margin-bottom: 10px;">${report.nombre}</h2>
+                            <p style="font-size: 1.1em;"><strong>CI:</strong> ${report.ci}</p>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                            <h3 style="color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Información del Examen</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div>
+                                    <p><strong>Fecha de Examen:</strong></p>
+                                    <p>${report.fecha}</p>
+                                </div>
+                                <div>
+                                    <p><strong>Resultado:</strong></p>
+                                    <p style="font-weight: bold; font-size: 1.2em; color: ${report.resultado === 'Normal' ? 'green' : report.resultado === 'Anormal' ? 'red' : 'orange'};">${report.resultado}</p>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <p><strong>Observaciones:</strong></p>
+                                <p style="background: white; padding: 10px; border-radius: 5px; border-left: 4px solid #667eea;">${report.observaciones || 'No hay observaciones registradas para este examen.'}</p>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button class="btn btn-secondary" onclick="cerrarModalDetalle()">Cerrar</button>
+                            <button class="btn btn-danger" onclick="eliminarInformePorId(${report.id})">Eliminar Informe</button>
+                        </div>
+                    </div>
                 `;
+                
+                // Show modal
+                modal.style.display = 'block';
+            }
+        }
+        
+        // Close detail modal
+        function cerrarModalDetalle() {
+            const modal = document.getElementById('detalleModal');
+            if (modal) {
+                modal.style.display = 'none';
             }
         }
         
@@ -2609,8 +2765,7 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 actualizarEstadisticas();
                 saveData();
                 
-                // Clear search results
-                document.getElementById('resultadoBusqueda').innerHTML = '<p>Los resultados aparecerán aquí después de realizar la búsqueda</p>';
+
             }
         }
         
@@ -2666,11 +2821,96 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 return;
             }
             
-            alert('Funcionalidad de importación no implementada en esta demostración.\nEn una implementación real, esto procesaría el archivo Excel y actualizaría la base de datos PAP.');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheet];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    // Process the imported data
+                    if (jsonData.length > 0) {
+                        // Clear existing data
+                        papReports = [];
+                        
+                        // Convert imported data to our format
+                        jsonData.forEach((row, index) => {
+                            papReports.push({
+                                id: row.ID || index + 1,
+                                nombre: row.Nombre || row.nombre || '',
+                                ci: row.CI || row.ci || '',
+                                fecha: row['Fecha de Examen'] || row.fecha || '',
+                                resultado: row.Resultado || row.resultado || '',
+                                observaciones: row.Observaciones || row.observaciones || ''
+                            });
+                        });
+                        
+                        // Save to localStorage
+                        saveData();
+                        
+                        // Update UI
+                        actualizarListaInformes();
+                        actualizarEstadisticas();
+                        
+                        alert(`✅ ${jsonData.length} registros importados exitosamente.`);
+                        
+                        // Clear file input
+                        document.getElementById('archivoExcel').value = '';
+                    } else {
+                        alert('⚠️ El archivo no contiene datos válidos.');
+                    }
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    alert('❌ Error al importar el archivo. Por favor, asegúrese de que es un archivo Excel válido.');
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('❌ Error al leer el archivo.');
+            };
+            
+            reader.readAsArrayBuffer(archivo);
         }
         
         function descargarPlantilla() {
-            alert('Funcionalidad de descarga de plantilla no implementada en esta demostración.\nEn una implementación real, esto descargaría una plantilla Excel para importar datos PAP.');
+            // Create template data
+            const templateData = [{
+                'ID': '',
+                'Nombre': '',
+                'CI': '',
+                'Fecha de Examen': '',
+                'Resultado': '',
+                'Observaciones': ''
+            }];
+            
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(templateData);
+            
+            // Adjust column widths
+            const colWidths = [
+                { wch: 5 },   // ID
+                { wch: 25 },  // Nombre
+                { wch: 12 },  // CI
+                { wch: 15 },  // Fecha
+                { wch: 15 },  // Resultado
+                { wch: 30 }   // Observaciones
+            ];
+            ws['!cols'] = colWidths;
+            
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Plantilla PAP');
+            
+            // Generate file name
+            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+            const fileName = `Plantilla_PAP_${fecha}.xlsx`;
+            
+            // Download file
+            XLSX.writeFile(wb, fileName);
+            
+            alert(`✅ Plantilla Excel descargada exitosamente:\n${fileName}`);
         }
 
         // Navigation functions
@@ -2706,11 +2946,29 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
 
         // Cerrar modal al hacer clic fuera
         window.onclick = function(event) {
-            const modal = document.getElementById('appointmentModal');
-            if (event.target == modal) {
+            const appointmentModal = document.getElementById('appointmentModal');
+            const detalleModal = document.getElementById('detalleModal');
+            
+            if (event.target == appointmentModal) {
                 closeAppointmentModal();
+            } else if (event.target == detalleModal) {
+                cerrarModalDetalle();
             }
         }
+        
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const appointmentModal = document.getElementById('appointmentModal');
+                const detalleModal = document.getElementById('detalleModal');
+                
+                if (appointmentModal && appointmentModal.style.display === 'block') {
+                    closeAppointmentModal();
+                } else if (detalleModal && detalleModal.style.display === 'block') {
+                    cerrarModalDetalle();
+                }
+            }
+        });
 
         // Animaciones de scroll
         function animateOnScroll() {
@@ -2856,6 +3114,51 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 });
             }
         });
+        
+        // Batch add PAP records
+        function addBatchPAPRecords() {
+            const batchData = document.getElementById('batchData').value.trim();
+            
+            if (!batchData) {
+                alert('Por favor ingrese los datos de los pacientes');
+                return;
+            }
+            
+            const lines = batchData.split('\n');
+            const records = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const parts = line.split(',');
+                
+                if (parts.length < 4) {
+                    alert(`Error en la línea ${i + 1}: Formato incorrecto. Se requieren al menos 4 campos (Nombre, CI, Fecha, Resultado)`);
+                    return;
+                }
+                
+                records.push({
+                    nombre: parts[0].trim(),
+                    ci: parts[1].trim(),
+                    fecha: parts[2].trim(),
+                    resultado: parts[3].trim(),
+                    observaciones: parts[4] ? parts[4].trim() : ''
+                });
+            }
+            
+            if (records.length > 0) {
+                const addedRecords = addPAPRecordsBatch(records);
+                if (addedRecords.length > 0) {
+                    document.getElementById('batchData').value = '';
+                }
+            }
+        }
+        
+        // Clear batch data
+        function clearBatchData() {
+            document.getElementById('batchData').value = '';
+        }
     </script>
 </body>
 </html>
