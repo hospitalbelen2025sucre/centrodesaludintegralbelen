@@ -2991,11 +2991,85 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             }
         }
         
+        // Save all data to localStorage
+        function saveData() {
+            try {
+                localStorage.setItem('appointmentsData', JSON.stringify(appointmentsData));
+                localStorage.setItem('papReports', JSON.stringify(papReports));
+                
+                // Automatically export to Excel with current date
+                exportToExcelWithDate();
+            } catch (e) {
+                console.error('Error saving data to localStorage:', e);
+            }
+        }
+        
+        // Function to automatically export PAP data to Excel with current date
+        function exportToExcelWithDate() {
+            if (typeof XLSX === 'undefined') {
+                console.warn('Excel library not loaded');
+                return;
+            }
+            
+            // Format current date as DD-MM-YYYY
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const formattedDate = `${day}-${month}-${year}`;
+            
+            // Prepare data for Excel
+            const excelData = papReports.map(report => ({
+                'ID': report.id,
+                'Nombre': report.nombre,
+                'CI': report.ci,
+                'Fecha de Examen': report.fecha,
+                'Resultado': report.resultado,
+                'Observaciones': report.observaciones
+            }));
+
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // Adjust column widths
+            const colWidths = [
+                { wch: 5 },   // ID
+                { wch: 25 },  // Nombre
+                { wch: 12 },  // CI
+                { wch: 15 },  // Fecha
+                { wch: 15 },  // Resultado
+                { wch: 30 }   // Observaciones
+            ];
+            ws['!cols'] = colWidths;
+
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Informes PAP');
+
+            // Generate file name with current date
+            const fileName = `Informes_PAP_${formattedDate}.xlsx`;
+
+            // In a browser environment, we can't directly save files to the filesystem
+            // But we can trigger a download
+            try {
+                XLSX.writeFile(wb, fileName);
+            } catch (e) {
+                console.warn('Could not automatically save file:', e);
+            }
+        }
+        
         function descargarExcelPAP() {
             if (typeof XLSX === 'undefined') {
                 alert('⚠️ Error: La librería de Excel no está cargada correctamente.');
                 return;
             }
+            
+            // Format current date as DD-MM-YYYY
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const formattedDate = `${day}-${month}-${year}`;
             
             // Preparar datos para Excel
             const excelData = papReports.map(report => ({
@@ -3025,9 +3099,8 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             // Agregar hoja al libro
             XLSX.utils.book_append_sheet(wb, ws, 'Informes PAP');
 
-            // Generar nombre de archivo
-            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
-            const fileName = `Informes_PAP_${fecha}.xlsx`;
+            // Generar nombre de archivo con fecha actual
+            const fileName = `Informes_PAP_${formattedDate}.xlsx`;
 
             // Descargar archivo
             XLSX.writeFile(wb, fileName);
