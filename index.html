@@ -941,6 +941,17 @@
             font-size: 0.8rem;
             margin-top: 5px;
         }
+        
+        .view-hc-btn {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
 
         /* Export Button */
         .export-btn {
@@ -1594,25 +1605,99 @@
                                     <!-- Las fichas se generan dinámicamente -->
                                 </div>
                                 
+                                <!-- INICIO DE patientForm (Línea 749) - Reemplazado -->
                                 <div class="patient-form" id="patientForm" style="display: none;">
-                                    <h5>Registrar Nuevo Paciente</h5>
+                                    <h5 id="patientFormTitle">Registrar Nuevo Paciente y Datos Clínicos</h5>
+                                    
+                                    <!-- Datos Básicos y Demográficos -->
                                     <div class="form-group">
                                         <label for="patientName">Nombre Completo:</label>
-                                        <input type="text" id="patientName" placeholder="Ingrese el nombre completo">
+                                        <input type="text" id="patientName" placeholder="Ingrese el nombre completo" required>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                        <div class="form-group">
+                                            <label for="patientCI">Cédula de Identidad:</label>
+                                            <input type="text" id="patientCI" placeholder="Ingrese la CI" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="patientPhone">Teléfono:</label>
+                                            <input type="text" id="patientPhone" placeholder="Ingrese el teléfono" required>
+                                        </div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                        <div class="form-group">
+                                            <label for="edad">Edad:</label>
+                                            <input type="number" id="edad" placeholder="Edad" min="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sexo">Sexo:</label>
+                                            <select id="sexo">
+                                                <option value="">Seleccionar</option>
+                                                <option value="F">Femenino</option>
+                                                <option value="M">Masculino</option>
+                                                <option value="O">Otro</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="discapacidad">Discapacidad:</label>
+                                            <select id="discapacidad">
+                                                <option value="No">No</option>
+                                                <option value="Si">Sí</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group ginecologia-only" style="display: none;">
+                                        <label for="embarazo">Embarazo (Solo Ginecología):</label>
+                                        <select id="embarazo">
+                                            <option value="No">No</option>
+                                            <option value="Si">Sí</option>
+                                        </select>
+                                    </div>
+
+                                    <hr style="margin: 20px 0;">
+
+                                    <!-- Signos Vitales y Clínicos -->
+                                    <h6 style="color: #dc2626; margin-bottom: 10px; font-weight: bold;">Signos Vitales y Evolución</h6>
+                                    
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                        <div class="form-group">
+                                            <label for="temperatura">Temperatura (°C):</label>
+                                            <input type="number" step="0.1" id="temperatura" placeholder="Ej: 36.5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="presion">Presión Arterial (mmHg):</label>
+                                            <input type="text" id="presion" placeholder="Ej: 120/80">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="frecuenciaCardiaca">Frecuencia Cardiaca (lpm):</label>
+                                            <input type="number" id="frecuenciaCardiaca" placeholder="Ej: 75">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="saturacion">Saturación de Oxígeno (%):</label>
+                                            <input type="number" id="saturacion" placeholder="Ej: 98">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="historiaClinica">Historia Clínica/Motivo de Consulta:</label>
+                                        <textarea id="historiaClinica" class="form-control" rows="3" placeholder="Síntomas, antecedentes o motivo de consulta..."></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="patientCI">Cédula de Identidad:</label>
-                                        <input type="text" id="patientCI" placeholder="Ingrese la CI">
+                                        <label for="diagnostico">Diagnóstico (Inicial):</label>
+                                        <textarea id="diagnostico" class="form-control" rows="2" placeholder="Diagnóstico preliminar..."></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="patientPhone">Teléfono:</label>
-                                        <input type="text" id="patientPhone" placeholder="Ingrese el teléfono">
+                                        <label for="tratamiento">Tratamiento/Indicaciones:</label>
+                                        <textarea id="tratamiento" class="form-control" rows="2" placeholder="Tratamiento o conducta a seguir..."></textarea>
                                     </div>
+
                                     <div class="form-actions">
                                         <button class="btn btn-secondary" onclick="cancelPatientForm()">Cancelar</button>
                                         <button class="btn btn-primary" onclick="savePatient()">Guardar Paciente</button>
                                     </div>
                                 </div>
+                                <!-- FIN DE patientForm (Línea 808) -->
                             </div>
                         </div>
                     </div>
@@ -1968,20 +2053,48 @@
                 };
             });
             
-            // Datos de ejemplo
+            // Datos de ejemplo con la nueva estructura de Historia Clínica y Signos Vitales
             appointmentsData['ODONTOLOGIA'].morning[0].patient = {
                 name: 'María González',
                 ci: '12345678',
                 phone: '70123456',
+                edad: 35,
+                sexo: 'F',
+                discapacidad: 'No',
+                embarazo: 'N/A',
                 registeredBy: 'admin',
-                registeredAt: new Date().toLocaleString('es-ES')
+                registeredAt: new Date().toLocaleString('es-ES'),
+                seguro: 'SUS',
+                historiaClinica: 'Dolor de muela en cuadrante inferior derecho, 4 días de evolución.',
+                diagnostico: 'Pulpitis reversible',
+                tratamiento: 'Amalgama de resina en pieza 4.6',
+                signosVitales: {
+                    temperatura: '37.1',
+                    presion: '110/70',
+                    frecuenciaCardiaca: '80',
+                    saturacion: '99'
+                }
             };
-            appointmentsData['ODONTOLOGIA'].morning[2].patient = {
-            name: 'Juan Pérez',
+            appointmentsData['GINECOLOGIA'].morning[2].patient = {
+                name: 'Ana García',
                 ci: '87654321',
                 phone: '71234567',
+                edad: 28,
+                sexo: 'F',
+                discapacidad: 'No',
+                embarazo: 'Si',
                 registeredBy: 'doctor',
-                registeredAt: new Date().toLocaleString('es-ES')
+                registeredAt: new Date().toLocaleString('es-ES'),
+                seguro: 'Ninguno',
+                historiaClinica: 'Control prenatal de 32 semanas, sin complicaciones.',
+                diagnostico: 'Embarazo de 32 semanas. Control rutinario.',
+                tratamiento: 'Control mensual, suplemento vitamínico.',
+                signosVitales: {
+                    temperatura: '36.8',
+                    presion: '115/75',
+                    frecuenciaCardiaca: '78',
+                    saturacion: '97'
+                }
             };
         }
 
@@ -2088,13 +2201,11 @@
                 });
             });
 
-            // Enter en formulario de pacientes
-            ['patientName', 'patientCI', 'patientPhone'].forEach(id => {
-                document.getElementById(id).addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        savePatient();
-                    }
-                });
+            // Agrega listener para el cambio de servicio para mostrar/ocultar campos específicos
+            document.getElementById('appointmentModal').addEventListener('DOMNodeInserted', function(e) {
+                if (e.target.id === 'patientForm' && e.target.style.display !== 'none') {
+                    checkGinecologia();
+                }
             });
         });
 
@@ -2116,7 +2227,11 @@
                 document.getElementById('loggedUser').textContent = `👤 Personal: ${username}`;
                 
                 if (pendingSlot) {
-                    showPatientFormAfterAuth(pendingSlot);
+                    if (pendingSlot.type === 'register') {
+                         showPatientFormAfterAuth(pendingSlot.slotNumber);
+                    } else if (pendingSlot.type === 'edit_hc') {
+                         viewAndEditHC(pendingSlot.slotNumber); // Re-llama la función para precargar
+                    }
                     pendingSlot = null;
                 }
                 
@@ -2167,8 +2282,28 @@
         let currentService = '';
         let currentShift = 'morning';
         let currentSlot = null;
+        
+        // Función para ver/editar HC de una ficha ocupada (LÍNEA 910)
+        function viewAndEditHC(slotNumber) {
+            if (!isAuthenticated) {
+                // Guarda la intención y abre el modal de login
+                pendingSlot = { type: 'edit_hc', slotNumber: slotNumber };
+                document.getElementById('loginModal').style.display = 'block';
+                document.getElementById('username').focus();
+                return;
+            }
+            
+            currentSlot = slotNumber;
+            const slotData = appointmentsData[currentService][currentShift][currentSlot - 1];
+            
+            if (slotData.patient) {
+                showPatientForm(slotNumber, true); // Pasar 'true' para indicar que es modo edición
+            } else {
+                alert('⚠️ Error: Esta ficha está vacía.');
+            }
+        }
 
-        // Modify the savePatient function to save data after changes
+        // Modificación: Captura y guarda Historia Clínica y Signos Vitales + demográficos
         function savePatient() {
             if (!isAuthenticated) {
                 alert('🔒 Error: Sesión no válida. Inicie sesión nuevamente.');
@@ -2179,28 +2314,70 @@
             const name = document.getElementById('patientName').value.trim();
             const ci = document.getElementById('patientCI').value.trim();
             const phone = document.getElementById('patientPhone').value.trim();
-
-            if (!name || !ci || !phone) {
-                alert('⚠️ favor, complete todos los campos');
-                return;
+            
+            // --- NUEVOS CAMPOS DEMOGRÁFICOS ---
+            const edad = document.getElementById('edad').value.trim();
+            const sexo = document.getElementById('sexo').value.trim();
+            const discapacidad = document.getElementById('discapacidad').value.trim();
+            let embarazo = 'N/A'; // Default para servicios que no son Ginecología
+            
+            if (currentService === 'GINECOLOGIA') {
+                embarazo = document.getElementById('embarazo').value.trim();
             }
+            // ------------------------------------
 
-            const existingPatient = appointmentsData[currentService][currentShift].find(
-                apt => apt.patient && apt.patient.ci === ci
-            );
+            // --- CAMPOS CLÍNICOS ---
+            const historiaClinica = document.getElementById('historiaClinica').value.trim();
+            const diagnostico = document.getElementById('diagnostico').value.trim();
+            const tratamiento = document.getElementById('tratamiento').value.trim();
+            const temperatura = document.getElementById('temperatura').value.trim();
+            const presion = document.getElementById('presion').value.trim();
+            const frecuenciaCardiaca = document.getElementById('frecuenciaCardiaca').value.trim();
+            const saturacion = document.getElementById('saturacion').value.trim();
+            // -----------------------
 
-            if (existingPatient) {
-                alert('❌ Ya existe un paciente registrado con esta CI en este turno');
+            if (!name || !ci || !phone || !edad || !sexo) {
+                alert('⚠️ Por favor, complete los campos obligatorios: Nombre, CI, Teléfono, Edad y Sexo.');
                 return;
             }
 
             const slotIndex = currentSlot - 1;
+            const isEditing = !!appointmentsData[currentService][currentShift][slotIndex].patient;
+
+            // Si es un nuevo registro (no edición), verifica si el CI ya existe
+            if (!isEditing) {
+                const existingPatient = appointmentsData[currentService][currentShift].find(
+                    (apt, index) => apt.patient && apt.patient.ci === ci && index !== slotIndex
+                );
+                if (existingPatient) {
+                    alert('❌ Ya existe un paciente registrado con esta CI en este turno');
+                    return;
+                }
+            }
+
+            // Almacena/Actualiza los datos del paciente
             appointmentsData[currentService][currentShift][slotIndex].patient = {
                 name,
                 ci,
                 phone,
-                registeredBy: currentUser,
-                registeredAt: new Date().toLocaleString('es-ES')
+                edad,
+                sexo,
+                discapacidad,
+                embarazo, 
+                seguro: appointmentsData[currentService][currentShift][slotIndex].patient?.seguro || 'N/A', // Mantiene el seguro si es edición, sino N/A
+                registeredBy: isEditing ? appointmentsData[currentService][currentShift][slotIndex].patient.registeredBy : currentUser, // Mantiene el usuario original si edita
+                registeredAt: appointmentsData[currentService][currentShift][slotIndex].patient?.registeredAt || new Date().toLocaleString('es-ES'), // Mantiene la fecha original si edita
+                
+                // Datos clínicos
+                historiaClinica,
+                diagnostico,
+                tratamiento,
+                signosVitales: {
+                    temperatura,
+                    presion,
+                    frecuenciaCardiaca,
+                    saturacion
+                }
             };
 
             // Save to localStorage
@@ -2208,9 +2385,19 @@
 
             cancelPatientForm();
             updateAppointmentView();
-            alert(`✅ Paciente ${name} registrado exitosamente en la ficha #${currentSlot}\n👤 Registrado por: ${currentUser}`);
+            alert(`✅ Datos del paciente ${name} ${isEditing ? 'actualizados' : 'registrados'} exitosamente en la ficha #${currentSlot}\n👤 Acción realizada por: ${currentUser}`);
         }
 
+        // Modificación: Función auxiliar para mostrar campo de embarazo en Ginecología
+        function checkGinecologia() {
+            const embarazoField = document.querySelector('.ginecologia-only');
+            if (currentService === 'GINECOLOGIA') {
+                embarazoField.style.display = 'block';
+            } else {
+                embarazoField.style.display = 'none';
+            }
+        }
+        
         // Modify the removePatient function to save data after changes
         function removePatient(slotNumber) {
             if (!isAuthenticated) {
@@ -2280,7 +2467,21 @@
                             phone: data.telefono,
                             registeredBy: currentUser,
                             registeredAt: new Date().toLocaleString('es-ES'),
-                            seguro: data.seguro
+                            seguro: data.seguro,
+                            // Valores por defecto para registro rápido
+                            edad: '',
+                            sexo: '',
+                            discapacidad: 'No',
+                            embarazo: serviceName === 'GINECOLOGIA' ? 'Desconocido' : 'N/A',
+                            historiaClinica: 'Registro rápido en ventanilla.', 
+                            diagnostico: '',
+                            tratamiento: '',
+                            signosVitales: { 
+                                temperatura: '',
+                                presion: '',
+                                frecuenciaCardiaca: '',
+                                saturacion: ''
+                            }
                         };
                         assigned = true;
                         slotNumber = i + 1;
@@ -2299,7 +2500,21 @@
                                 phone: data.telefono,
                                 registeredBy: currentUser,
                                 registeredAt: new Date().toLocaleString('es-ES'),
-                                seguro: data.seguro
+                                seguro: data.seguro,
+                                // Valores por defecto para registro rápido
+                                edad: '',
+                                sexo: '',
+                                discapacidad: 'No',
+                                embarazo: serviceName === 'GINECOLOGIA' ? 'Desconocido' : 'N/A',
+                                historiaClinica: 'Registro rápido en ventanilla.',
+                                diagnostico: '',
+                                tratamiento: '',
+                                signosVitales: {
+                                    temperatura: '',
+                                    presion: '',
+                                    frecuenciaCardiaca: '',
+                                    saturacion: ''
+                                }
                             };
                             assigned = true;
                             slotNumber = i + 1;
@@ -2361,6 +2576,8 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             document.querySelectorAll('.shift-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.shift-tab')[0].classList.add('active');
             updateAppointmentView();
+            // Llama a la función para verificar si es Ginecología y mostrar campo de embarazo
+            checkGinecologia(); 
         }
 
         function closeAppointmentModal() {
@@ -2399,10 +2616,12 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 let patientInfo = '';
                 if (appointment.patient) {
                     patientInfo = `
-                        <strong>${appointment.patient.name}</strong><br>
-                        CI: ${appointment.patient.ci}<br>
-                        Tel: ${appointment.patient.phone}
+                        <strong>${appointment.patient.name} (${appointment.patient.sex || ''}, ${appointment.patient.edad || 'N/A'} años)</strong><br>
+                        CI: ${appointment.patient.ci} | Tel: ${appointment.patient.phone}
                         ${appointment.patient.seguro ? `<br>Seguro: ${appointment.patient.seguro}` : ''}
+                        ${appointment.patient.historiaClinica ? `<br><span style="font-style: italic; color: #991b1b;">Motivo: ${appointment.patient.historiaClinica.substring(0, 30)}...</span>` : ''}
+                        ${appointment.patient.discapacidad === 'Si' ? `<br><span style="font-weight: bold; color: blue;">Discapacidad: Sí</span>` : ''}
+                        ${(currentService === 'GINECOLOGIA' && appointment.patient.embarazo === 'Si') ? `<br><span style="font-weight: bold; color: #ff6b6b;">🤰 Embarazo: Sí</span>` : ''}
                         ${appointment.patient.registeredBy ? `<br><small>👤 Por: ${appointment.patient.registeredBy}</small>` : ''}
                         ${appointment.patient.registeredAt ? `<br><small>🕒 ${appointment.patient.registeredAt}</small>` : ''}
                     `;
@@ -2416,19 +2635,24 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                         `<button class="add-patient-btn" onclick="showPatientForm(${appointment.slotNumber})">
                             Asignar Paciente
                         </button>` :
-                        `<button class="add-patient-btn public-view" onclick="requestAuth(${appointment.slotNumber})">
+                        `<button class="add-patient-btn public-view" onclick="requestAuth(${appointment.slotNumber}, 'register')">
                             🔐 Asignar Paciente (Personal)
                         </button>`;
                 } else {
-                    if (isAuthenticated) {
-                        actionButtons = `<button class="add-patient-btn" style="background: #ff6b6b;" onclick="removePatient(${appointment.slotNumber})">
-                            Liberar Ficha
-                        </button>`;
-                    } else {
-                        actionButtons = `<div class="staff-only-action">
-                            🔒 Solo personal puede liberar fichas
-                        </div>`;
-                    }
+                    // Botón de Ver/Editar Historia Clínica para fichas ocupadas
+                    actionButtons = `
+                        <button class="view-hc-btn" onclick="viewAndEditHC(${appointment.slotNumber})">
+                            📝 Ver/Editar HC
+                        </button>
+                        ${isAuthenticated ? 
+                            `<button class="add-patient-btn" style="background: #ff6b6b; margin-left: 5px;" onclick="removePatient(${appointment.slotNumber})">
+                                Liberar Ficha
+                            </button>` :
+                            `<div class="staff-only-action">
+                                🔒 Solo personal puede liberar fichas
+                            </div>`
+                        }
+                    `;
                 }
 
                 slotDiv.innerHTML = `
@@ -2443,37 +2667,88 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             });
         }
 
-        function requestAuth(slotNumber) {
-            pendingSlot = slotNumber;
+        function requestAuth(slotNumber, type) {
+            pendingSlot = { slotNumber, type };
             document.getElementById('loginModal').style.display = 'block';
             document.getElementById('username').focus();
         }
 
-        function showPatientForm(slotNumber) {
-            if (!isAuthenticated) {
-                requestAuth(slotNumber);
+        // Modificación: Agrega parámetro para modo edición (isEditMode)
+        function showPatientForm(slotNumber, isEditMode = false) {
+            if (!isAuthenticated && !isEditMode) {
+                requestAuth(slotNumber, 'register');
                 return;
             }
+            
             currentSlot = slotNumber;
             document.getElementById('patientForm').style.display = 'block';
             document.getElementById('patientName').focus();
+            checkGinecologia(); 
+            
+            const formTitle = document.getElementById('patientFormTitle');
+            const slotData = appointmentsData[currentService][currentShift][currentSlot - 1];
+
+            if (isEditMode && slotData.patient) {
+                // Modo Edición: Precargar datos
+                formTitle.textContent = `📝 Editar Historia Clínica Ficha #${slotNumber}`;
+                const patient = slotData.patient;
+                document.getElementById('patientName').value = patient.name || '';
+                document.getElementById('patientCI').value = patient.ci || '';
+                document.getElementById('patientPhone').value = patient.phone || '';
+                document.getElementById('edad').value = patient.edad || '';
+                document.getElementById('sexo').value = patient.sex || '';
+                document.getElementById('discapacidad').value = patient.discapacidad || 'No';
+                if (document.getElementById('embarazo')) {
+                    document.getElementById('embarazo').value = patient.embarazo || 'No';
+                }
+                document.getElementById('historiaClinica').value = patient.historiaClinica || '';
+                document.getElementById('diagnostico').value = patient.diagnostico || '';
+                document.getElementById('tratamiento').value = patient.tratamiento || '';
+                document.getElementById('temperatura').value = patient.signosVitales?.temperatura || '';
+                document.getElementById('presion').value = patient.signosVitales?.presion || '';
+                document.getElementById('frecuenciaCardiaca').value = patient.signosVitales?.frecuenciaCardiaca || '';
+                document.getElementById('saturacion').value = patient.signosVitales?.saturacion || '';
+                
+            } else {
+                // Modo Nuevo Registro: Limpiar formulario
+                formTitle.textContent = `Registrar Nuevo Paciente y Datos Clínicos Ficha #${slotNumber}`;
+                cancelPatientForm(false); // Limpia pero no oculta el formulario
+            }
         }
 
         function showPatientFormAfterAuth(slotNumber) {
-            currentSlot = slotNumber;
-            document.getElementById('patientForm').style.display = 'block';
-            document.getElementById('patientName').focus();
+            showPatientForm(slotNumber, false);
         }
 
-        function cancelPatientForm() {
-            document.getElementById('patientForm').style.display = 'none';
+        // Modificación: Limpieza de nuevos campos 
+        function cancelPatientForm(hideForm = true) {
             document.getElementById('patientName').value = '';
             document.getElementById('patientCI').value = '';
             document.getElementById('patientPhone').value = '';
+            
+            // --- LIMPIEZA DE NUEVOS CAMPOS ---
+            document.getElementById('edad').value = '';
+            document.getElementById('sexo').value = '';
+            document.getElementById('discapacidad').value = 'No';
+            if (document.getElementById('embarazo')) {
+                 document.getElementById('embarazo').value = 'No';
+            }
+            document.getElementById('historiaClinica').value = '';
+            document.getElementById('diagnostico').value = '';
+            document.getElementById('tratamiento').value = '';
+            document.getElementById('temperatura').value = '';
+            document.getElementById('presion').value = '';
+            document.getElementById('frecuenciaCardiaca').value = '';
+            document.getElementById('saturacion').value = '';
+            // --------------------------------
+            
             currentSlot = null;
+            if (hideForm) {
+                 document.getElementById('patientForm').style.display = 'none';
+            }
         }
 
-        // Función para exportar a Excel
+        // Función para exportar a Excel (sólo el turno actual)
         function exportToExcel() {
             if (typeof XLSX === 'undefined') {
                 alert('⚠️ Error: La librería de Excel no está cargada correctamente.');
@@ -2485,29 +2760,29 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             
             // Preparar datos para Excel
             const excelData = appointments.map(apt => {
-                if (apt.patient) {
-                    return {
-                        'Ficha': apt.slotNumber,
-                        'Nombre': apt.patient.name,
-                        'CI': apt.patient.ci,
-                        'Teléfono': apt.patient.phone,
-                        'Seguro': apt.patient.seguro || 'N/A',
-                        'Registrado por': apt.patient.registeredBy || 'N/A',
-                        'Fecha/Hora': apt.patient.registeredAt || 'N/A',
-                        'Estado': 'Ocupada'
-                    };
-                } else {
-                    return {
-                        'Ficha': apt.slotNumber,
-                        'Nombre': '-',
-                        'CI': '-',
-                        'Teléfono': '-',
-                        'Seguro': '-',
-                        'Registrado por': '-',
-                        'Fecha/Hora': '-',
-                        'Estado': 'Disponible'
-                    };
-                }
+                const isOccupied = !!apt.patient;
+                
+                return {
+                    'Ficha': apt.slotNumber,
+                    'Nombre': isOccupied ? apt.patient.name : '-',
+                    'CI': isOccupied ? apt.patient.ci : '-',
+                    'Teléfono': isOccupied ? apt.patient.phone : '-',
+                    'Edad': isOccupied ? apt.patient.edad || '-' : '-', // NUEVO
+                    'Sexo': isOccupied ? apt.patient.sex || '-' : '-', // NUEVO
+                    'Discapacidad': isOccupied ? apt.patient.discapacidad || 'No' : '-', // NUEVO
+                    'Embarazo': isOccupied ? apt.patient.embarazo || 'N/A' : '-', // NUEVO
+                    'Seguro': isOccupied ? apt.patient.seguro || 'N/A' : '-',
+                    'Historia Clínica': isOccupied ? apt.patient.historiaClinica || '' : '-', // NUEVO
+                    'Diagnóstico': isOccupied ? apt.patient.diagnostico || '' : '-', // NUEVO
+                    'Tratamiento': isOccupied ? apt.patient.tratamiento || '' : '-', // NUEVO
+                    'Temp. (°C)': isOccupied ? apt.patient.signosVitales?.temperatura || '' : '-', // NUEVO
+                    'P.A. (mmHg)': isOccupied ? apt.patient.signosVitales?.presion || '' : '-', // NUEVO
+                    'F.C. (lpm)': isOccupied ? apt.patient.signosVitales?.frecuenciaCardiaca || '' : '-', // NUEVO
+                    'Sat. (%)': isOccupied ? apt.patient.signosVitales?.saturacion || '' : '-', // NUEVO
+                    'Registrado por': isOccupied ? apt.patient.registeredBy || 'N/A' : '-',
+                    'Fecha/Hora': isOccupied ? apt.patient.registeredAt || 'N/A' : '-',
+                    'Estado': isOccupied ? 'Ocupada' : 'Disponible'
+                };
             });
 
             // Crear libro de trabajo
@@ -2520,7 +2795,18 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 { wch: 25 }, // Nombre
                 { wch: 12 }, // CI
                 { wch: 15 }, // Teléfono
+                { wch: 7 },  // Edad
+                { wch: 7 },  // Sexo
+                { wch: 14 }, // Discapacidad
+                { wch: 14 }, // Embarazo
                 { wch: 12 }, // Seguro
+                { wch: 30 }, // Historia Clínica
+                { wch: 25 }, // Diagnóstico
+                { wch: 25 }, // Tratamiento
+                { wch: 10 }, // Temp.
+                { wch: 12 }, // P.A.
+                { wch: 10 }, // F.C.
+                { wch: 10 }, // Sat.
                 { wch: 18 }, // Registrado por
                 { wch: 20 }, // Fecha/Hora
                 { wch: 12 }  // Estado
@@ -2548,11 +2834,156 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             alert('Funcionalidad de generación de reportes no implementada en esta demostración.\nEn una implementación real, esto generaría un reporte detallado de todas las citas médicas.');
         }
 
+        // Modificación: Implementación de la Exportación Maestra (TODAS las citas) 
         function exportAllAppointments() {
-            alert('Funcionalidad de exportación de todas las citas no implementada en esta demostración.\nEn una implementación real, esto exportaría todas las citas médicas registradas.');
+            if (typeof XLSX === 'undefined') {
+                alert('⚠️ Error: La librería de Excel no está cargada correctamente.');
+                return;
+            }
+
+            const allAppointmentsData = [];
+            const serviceKeys = Object.keys(appointmentsData);
+            
+            // 1. Recorrer todos los servicios
+            serviceKeys.forEach(service => {
+                const shifts = ['morning', 'afternoon'];
+                shifts.forEach(shift => {
+                    appointmentsData[service][shift].forEach(slot => {
+                        if (slot.patient) {
+                            allAppointmentsData.push({
+                                'Servicio': service,
+                                'Turno': shift === 'morning' ? 'Mañana' : 'Tarde',
+                                'Ficha': slot.slotNumber,
+                                'Nombre': slot.patient.name,
+                                'CI': slot.patient.ci,
+                                'Teléfono': slot.patient.phone,
+                                'Edad': slot.patient.edad || '', // NUEVO
+                                'Sexo': slot.patient.sex || '', // NUEVO
+                                'Discapacidad': slot.patient.discapacidad || 'No', // NUEVO
+                                'Embarazo': slot.patient.embarazo || 'N/A', // NUEVO
+                                'Seguro': slot.patient.seguro || 'N/A',
+                                'Historia Clínica': slot.patient.historiaClinica || '', // NUEVO
+                                'Diagnóstico': slot.patient.diagnostico || '', // NUEVO
+                                'Tratamiento': slot.patient.tratamiento || '', // NUEVO
+                                'Temp. (°C)': slot.patient.signosVitales?.temperatura || '', 
+                                'P.A. (mmHg)': slot.patient.signosVitales?.presion || '', 
+                                'F.C. (lpm)': slot.patient.signosVitales?.frecuenciaCardiaca || '', 
+                                'Sat. (%)': slot.patient.signosVitales?.saturacion || '', 
+                                'Registrado Por': slot.patient.registeredBy || 'N/A',
+                                'Fecha/Hora Registro': slot.patient.registeredAt || 'N/A',
+                            });
+                        }
+                    });
+                });
+            });
+            
+            if (allAppointmentsData.length === 0) {
+                alert('⚠️ No hay pacientes registrados en el sistema para exportar.');
+                return;
+            }
+
+            // 4. Crear libro de trabajo con todos los datos
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(allAppointmentsData);
+            
+            // Ajustar ancho de columnas para un reporte completo
+            const colWidths = [
+                { wch: 15 }, // Servicio
+                { wch: 10 }, // Turno
+                { wch: 8 },  // Ficha
+                { wch: 30 }, // Nombre
+                { wch: 12 }, // CI
+                { wch: 15 }, // Teléfono
+                { wch: 7 },  // Edad (NUEVO)
+                { wch: 7 },  // Sexo (NUEVO)
+                { wch: 14 }, // Discapacidad (NUEVO)
+                { wch: 14 }, // Embarazo (NUEVO)
+                { wch: 12 }, // Seguro
+                { wch: 40 }, // Historia Clínica
+                { wch: 25 }, // Diagnóstico (NUEVO)
+                { wch: 25 }, // Tratamiento (NUEVO)
+                { wch: 12 }, // Temp.
+                { wch: 12 }, // P.A.
+                { wch: 12 }, // F.C.
+                { wch: 12 }, // Sat.
+                { wch: 18 }, // Registrado Por
+                { wch: 20 }, // Fecha/Hora Registro
+            ];
+            ws['!cols'] = colWidths;
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Reporte Maestro');
+
+            const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+            const fileName = `Reporte_Maestro_CS_BELEN_${fecha}.xlsx`;
+
+            XLSX.writeFile(wb, fileName);
+            
+            alert(`✅ Archivo Excel Maestro exportado exitosamente:\n${fileName}`);
         }
 
-        // PAP System Functions
+        // PAP System Functions (el resto del código del sistema PAP se mantiene igual)
+
+        function addPAPRecord(nombre, ci, fecha, resultado, observaciones) {
+            // Generate a new ID (find the max ID and add 1)
+            const newId = papReports.length > 0 ? Math.max(...papReports.map(r => r.id)) + 1 : 1;
+            
+            // Create the new record
+            const newRecord = {
+                id: newId,
+                nombre: nombre,
+                ci: ci,
+                fecha: fecha,
+                resultado: resultado,
+                observaciones: observaciones
+            };
+            
+            // Add to the database
+            papReports.push(newRecord);
+            
+            // Save to localStorage
+            saveData();
+            
+            // Update the UI
+            actualizarListaInformes();
+            actualizarEstadisticas();
+            
+            return newRecord;
+        }
+
+        // Add multiple PAP records at once
+        function addPAPRecordsBatch(records) {
+            if (!Array.isArray(records)) {
+                console.error('Records must be an array');
+                return [];
+            }
+            
+            const addedRecords = [];
+            
+            records.forEach(record => {
+                // Validate required fields
+                if (record.nombre && record.ci && record.fecha && record.resultado) {
+                    const newRecord = addPAPRecord(
+                        record.nombre,
+                        record.ci,
+                        record.fecha,
+                        record.resultado,
+                        record.observaciones || ''
+                    );
+                    addedRecords.push(newRecord);
+                } else {
+                    console.warn('Skipping invalid record:', record);
+                }
+            });
+            
+            if (addedRecords.length > 0) {
+                alert(`✅ ${addedRecords.length} registros agregados exitosamente a la base de datos PAP.`);
+            }
+            
+            return addedRecords;
+        }
+
+
+        // Funciones del sistema PAP (se mantienen igual)
         function actualizarEstadisticas() {
             const total = 3000;
             const almacenados = papReports.length;
@@ -2656,10 +3087,6 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
                 cuerpoTabla.appendChild(row);
             });
         }
-        
-
-        
-
         
         // Modal detailed view function
         function verDetalleModal(id) {
@@ -3046,13 +3473,13 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             // Add worksheet to workbook
             XLSX.utils.book_append_sheet(wb, ws, 'Informes PAP');
 
-            // Generate file name with current date
+            // Generar nombre de archivo con current date
             const fileName = `Informes_PAP_${formattedDate}.xlsx`;
 
             // In a browser environment, we can't directly save files to the filesystem
             // But we can trigger a download
             try {
-                XLSX.writeFile(wb, fileName);
+                // XLSX.writeFile(wb, fileName); // Comentado para evitar descargas innecesarias al guardar
             } catch (e) {
                 console.warn('Could not automatically save file:', e);
             }
@@ -3220,7 +3647,15 @@ Nota: No hay fichas disponibles en este momento. Será contactado cuando haya di
             
             // Update active nav link
             document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-            event.target.classList.add('active');
+            // Find the correct anchor tag based on sectionId (a little hacky way without a full router)
+            const targetLink = document.querySelector(`.nav-links a[onclick*="showSection('${sectionId}')"]`);
+            if (targetLink) {
+                targetLink.classList.add('active');
+            } else if (sectionId === 'main') {
+                 // The 'INICIO' link needs special handling due to its href="#"
+                document.querySelector('.nav-links a.active').classList.remove('active');
+                document.querySelector('.nav-links a[href="#"]').classList.add('active');
+            }
         }
 
         function openTab(evt, tabName) {
